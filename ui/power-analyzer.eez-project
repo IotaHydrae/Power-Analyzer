@@ -17,7 +17,7 @@
       "flowSupport": true,
       "displayWidth": 480,
       "displayHeight": 320,
-      "displayBorderRadius": 0,
+      "darkTheme": false,
       "colorFormat": "BGR",
       "resourceFiles": []
     },
