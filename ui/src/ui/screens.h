@@ -10,20 +10,19 @@ extern "C" {
 typedef struct _objects_t {
     lv_obj_t *home;
     lv_obj_t *settings;
-    lv_obj_t *button_home_1;
-    lv_obj_t *button_home_2;
-    lv_obj_t *button_meter_1;
-    lv_obj_t *button_meter_2;
-    lv_obj_t *button_ops;
-    lv_obj_t *button_power;
-    lv_obj_t *button_setting_1;
-    lv_obj_t *button_setting_2;
-    lv_obj_t *chart_current;
-    lv_obj_t *label_ops_pause;
-    lv_obj_t *label_ops_play;
-    lv_obj_t *menu_setting;
-    lv_obj_t *nav_bar_1;
-    lv_obj_t *nav_bar_2;
+    lv_obj_t *home_btn_home;
+    lv_obj_t *home_btn_meter;
+    lv_obj_t *home_btn_ops;
+    lv_obj_t *home_btn_ops_lbl_pause;
+    lv_obj_t *home_btn_ops_lbl_resume;
+    lv_obj_t *home_btn_pd;
+    lv_obj_t *home_btn_power;
+    lv_obj_t *home_btn_settings;
+    lv_obj_t *home_btn_statistics;
+    lv_obj_t *home_btn_title;
+    lv_obj_t *home_btn_title_lbl_hint;
+    lv_obj_t *home_chart_current;
+    lv_obj_t *home_nav_bar;
     lv_obj_t *obj0;
     lv_obj_t *obj1;
     lv_obj_t *obj10;
@@ -35,6 +34,13 @@ typedef struct _objects_t {
     lv_obj_t *obj7;
     lv_obj_t *obj8;
     lv_obj_t *obj9;
+    lv_obj_t *settings_btn_home;
+    lv_obj_t *settings_btn_meter;
+    lv_obj_t *settings_btn_pd;
+    lv_obj_t *settings_btn_settings;
+    lv_obj_t *settings_btn_statistics;
+    lv_obj_t *settings_menu_settings;
+    lv_obj_t *settings_nav_bar;
 } objects_t;
 
 extern objects_t objects;

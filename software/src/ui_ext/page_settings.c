@@ -105,7 +105,7 @@ static lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char
 
 void page_settings_finalize(void)
 {
-    lv_obj_t *menu = objects.menu_setting;
+    lv_obj_t *menu = objects.settings_menu_settings;
     lv_menu_set_mode_root_back_btn(menu, LV_MENU_ROOT_BACK_BTN_DISABLED);
 
     lv_obj_t * cont;

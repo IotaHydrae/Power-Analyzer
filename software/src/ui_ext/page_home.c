@@ -23,7 +23,7 @@ static void add_data(lv_timer_t *t)
 
 void page_home_finalize(void)
 {
-    lv_obj_t *chart = objects.chart_current;
+    lv_obj_t *chart = objects.home_chart_current;
     lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, -1000, 1000);
     lv_obj_set_style_size(chart, 0, LV_PART_INDICATOR);
     lv_chart_series_t * ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_RED), LV_CHART_AXIS_PRIMARY_Y);
