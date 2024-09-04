@@ -26,7 +26,7 @@
 # Set all global variables here
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(OVERCLOCK_ENABLED 0)    # 1: enable, 0: disable
+set(OVERCLOCK_ENABLED 1)    # 1: enable, 0: disable
 
 if(OVERCLOCK_ENABLED)
     message(WARNING "Overclocking is enabled. This may damage your device. Use at own risk.")
@@ -81,12 +81,12 @@ math(EXPR MY_DISP_BUF_SIZE "${LCD_HOR_RES} * ${LCD_VER_RES} / 4")
 
 # LCD driver type
 set(LCD_DRV_USE_ST7789  0)
-set(LCD_DRV_USE_ILI9488 0)
+set(LCD_DRV_USE_ILI9488 1)
 set(LCD_DRV_USE_ILI9806 0)
 set(LCD_DRV_USE_R61581  0)
 set(LCD_DRV_USE_ST6201  0)
 set(LCD_DRV_USE_1P5623  0)
-set(LCD_DRV_USE_LG4572B  1)
+set(LCD_DRV_USE_LG4572B  0)
 
 if(LCD_DRV_USE_ILI9488)
     include(${CMAKE_CURRENT_LIST_DIR}/cmake/ili9488.cmake)
@@ -103,7 +103,7 @@ elseif(LCD_DRV_USE_LG4572B)
 endif()
 
 # Input device driver type
-set(INDEV_DRV_USED        0)
+set(INDEV_DRV_USED        1)
 set(INDEV_DRV_USE_FT6236  1)
 set(INDEV_DRV_USE_NS2009  0)
 set(INDEV_DRV_USE_TSC2007 0)
@@ -129,7 +129,7 @@ target_compile_definitions(pio_i80 PUBLIC PIO_USE_DMA=${PIO_USE_DMA})
 target_compile_definitions(pio_i80 PUBLIC I80_BUS_WR_CLK_KHZ=${I80_BUS_WR_CLK_KHZ})
 
 # include factory test library here
-add_subdirectory(factory)
+# add_subdirectory(factory)
 
 # user define common source files
 file(GLOB_RECURSE COMMON_SOURCES
@@ -153,13 +153,19 @@ file(GLOB_RECURSE COMMON_SOURCES
     backlight.c
 )
 
-add_executable(${PROJECT_NAME} ${COMMON_SOURCES})
+file(GLOB_RECURSE UI_SOURCES
+    ui/*.c
+    ui/*.cpp
+)
+
+add_executable(${PROJECT_NAME} ${COMMON_SOURCES} ${UI_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/ui/
 )
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(${PROJECT_NAME}
     pico_stdlib
     pico_multicore
     FreeRTOS-Kernel-Heap3
@@ -168,7 +174,7 @@ target_link_libraries(${PROJECT_NAME}
     hardware_i2c
     hardware_pwm
     lvgl lvgl::demos lvgl::examples
-    factory_test
+    # factory_test
     )
 
 # add target common defines here

@@ -48,22 +48,24 @@
 #include "backlight.h"
 
 #include "debug.h"
+#include "ui/ui.h"
 
 QueueHandle_t xToFlushQueue = NULL;
 
 void vApplicationTickHook()
 {
 	lv_tick_inc(1);
+    ui_tick();
 }
 
 const TickType_t xPeriod = pdMS_TO_TICKS( 5 );
 static portTASK_FUNCTION(lv_timer_task_handler, pvParameters)
 {
 	TickType_t xLastWakeTime;
-	
-	xLastWakeTime = xTaskGetTickCount();  
-	
-	for(;;) {		
+
+	xLastWakeTime = xTaskGetTickCount();
+
+	for(;;) {
 		vTaskDelayUntil( &xLastWakeTime,xPeriod );
 		lv_timer_handler();
 	}
@@ -116,10 +118,12 @@ int main(void)
     // lv_demo_music();
 
     /* measure weighted fps and opa speed */
-    lv_demo_benchmark();
+    // lv_demo_benchmark();
 
     /* This is a factory test app */
     // factory_test();
+
+    ui_init();
 
     TaskHandle_t lvgl_task_handle;
     xTaskCreate(lv_timer_task_handler, "lvgl_task", 2048, NULL, (tskIDLE_PRIORITY + 3), &lvgl_task_handle);

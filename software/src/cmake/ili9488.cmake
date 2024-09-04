@@ -1,5 +1,5 @@
 set(LCD_PIN_DB_BASE  0)  # 8080 LCD data bus base pin
-set(LCD_PIN_DB_COUNT 16) # 8080 LCD data bus pin count
+set(LCD_PIN_DB_COUNT 8) # 8080 LCD data bus pin count
 set(LCD_PIN_CS  29)  # 8080 LCD chip select pin
 set(LCD_PIN_WR  19)  # 8080 LCD write pin
 set(LCD_PIN_RS  20)  # 8080 LCD register select pin
