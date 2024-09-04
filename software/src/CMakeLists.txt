@@ -77,7 +77,7 @@ set(LCD_VER_RES 320)
 set(DISP_OVER_PIO 1) # 1: PIO, 0: GPIO
 set(PIO_USE_DMA   1)   # 1: use DMA, 0: not use DMA
 set(I80_BUS_WR_CLK_KHZ 18000)
-math(EXPR MY_DISP_BUF_SIZE "${LCD_HOR_RES} * ${LCD_VER_RES} / 4")
+math(EXPR MY_DISP_BUF_SIZE "${LCD_HOR_RES} * ${LCD_VER_RES} / 8")
 
 # LCD driver type
 set(LCD_DRV_USE_ST7789  0)
@@ -156,6 +156,7 @@ file(GLOB_RECURSE COMMON_SOURCES
 file(GLOB_RECURSE UI_SOURCES
     ui/*.c
     ui/*.cpp
+    ui_ext/*.c
 )
 
 add_executable(${PROJECT_NAME} ${COMMON_SOURCES} ${UI_SOURCES})
@@ -163,16 +164,23 @@ add_executable(${PROJECT_NAME} ${COMMON_SOURCES} ${UI_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
     ${CMAKE_CURRENT_LIST_DIR}/ui/
+    ${CMAKE_CURRENT_LIST_DIR}/ui_ext/
 )
 
 target_link_libraries(${PROJECT_NAME}
+    pico_flash
     pico_stdlib
+    pico_malloc
+    pico_bit_ops
+    pico_mem_ops
     pico_multicore
     FreeRTOS-Kernel-Heap3
     pico_bootsel_via_double_reset
     pio_i80
     hardware_i2c
     hardware_pwm
+    hardware_flash
+    hardware_sync
     lvgl lvgl::demos lvgl::examples
     # factory_test
     )

@@ -27,6 +27,7 @@
 #include "pico/time.h"
 #include "pico/stdio.h"
 #include "pico/stdlib.h"
+#include "pico/flash.h"
 #include "pico/platform.h"
 #include "pico/stdio_uart.h"
 
@@ -34,6 +35,7 @@
 #include "hardware/vreg.h"
 #include "hardware/clocks.h"
 #include "hardware/timer.h"
+#include "hardware/flash.h"
 
 #include "lvgl/lvgl.h"
 #include "lvgl/demos/lv_demos.h"
@@ -49,13 +51,13 @@
 
 #include "debug.h"
 #include "ui/ui.h"
+#include "ui_ext/ui_ext.h"
 
 QueueHandle_t xToFlushQueue = NULL;
 
 void vApplicationTickHook()
 {
 	lv_tick_inc(1);
-    ui_tick();
 }
 
 const TickType_t xPeriod = pdMS_TO_TICKS( 5 );
@@ -66,8 +68,9 @@ static portTASK_FUNCTION(lv_timer_task_handler, pvParameters)
 	xLastWakeTime = xTaskGetTickCount();
 
 	for(;;) {
-		vTaskDelayUntil( &xLastWakeTime,xPeriod );
 		lv_timer_handler();
+        ui_tick();
+		vTaskDelayUntil( &xLastWakeTime,xPeriod );
 	}
 	vTaskDelete(NULL);
 }
@@ -98,11 +101,6 @@ int main(void)
     printf("\n\n\nPICO DM QD3503728 LVGL Porting\n");
 
     xToFlushQueue = xQueueCreate(2, sizeof(struct video_frame));
-    
-
-    // extern int tft_driver_init(void);
-    // tft_driver_init();
-    // for(;;);
 
     lv_init();
     lv_port_disp_init();
@@ -111,19 +109,13 @@ int main(void)
     lv_port_indev_init();
 #endif
 
-    printf("Starting demo\n");
-    // lv_example_btn_1();
-    // lv_demo_widgets();
-    // lv_demo_stress();
-    // lv_demo_music();
-
-    /* measure weighted fps and opa speed */
-    // lv_demo_benchmark();
-
-    /* This is a factory test app */
-    // factory_test();
+    printf("Starting App...\n");
 
     ui_init();
+    ui_finalize();
+    // lv_demo_benchmark();
+    // pico-sdk 1.5.1 ---- 98 87% 179 68 121
+    // pico-sdk 2.0.0 ---- 96 88% 173 68 122
 
     TaskHandle_t lvgl_task_handle;
     xTaskCreate(lv_timer_task_handler, "lvgl_task", 2048, NULL, (tskIDLE_PRIORITY + 3), &lvgl_task_handle);

@@ -1,6 +1,9 @@
 {
   "navigation": {
     "selectedUserPageObject": "[power-analyzer.eez-project]:/userPages/0",
+    "selectedUserWidgetObject": "[power-analyzer.eez-project]:/userWidgets/0",
+    "selectedActionObject": "[power-analyzer.eez-project]:/actions/-1",
+    "selectedFontObject": "[power-analyzer.eez-project]:/fonts/1",
     "selectedBitmapObject": "[power-analyzer.eez-project]:/bitmaps/-1",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Widgets"
@@ -63,6 +66,7 @@
           },
           {
             "type": "border",
+            "selected": 0,
             "location": "bottom",
             "children": [
               {
@@ -115,6 +119,7 @@
                   "type": "tabset",
                   "id": "#1d563d06-700e-4f8a-926e-81e1b641a583",
                   "weight": 1,
+                  "selected": 1,
                   "enableClose": false,
                   "children": [
                     {
@@ -181,13 +186,13 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 60,
-              "selected": 1,
+              "selected": 2,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
-                  "id": "#f7b5d7a1-cc30-4260-9201-614fe94e0669",
+                  "id": "#38c5a379-11c7-49b9-b93c-f46cd6ef859b",
                   "name": "Settings",
                   "component": "editor",
                   "config": {
@@ -199,7 +204,36 @@
                 },
                 {
                   "type": "tab",
-                  "id": "#c58e8bcc-a8e2-4fad-9995-6f50ae0b56f2",
+                  "id": "#6ac85b08-58b1-4901-b851-d16d3ef45999",
+                  "name": "nav",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[power-analyzer.eez-project]:/userWidgets/0",
+                    "permanent": false
+                  },
+                  "icon": {
+                    "type": "svg",
+                    "key": null,
+                    "ref": null,
+                    "props": {
+                      "viewBox": "0 96 960 960",
+                      "fill": "currentColor",
+                      "children": {
+                        "type": "path",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "d": "M343 636h225v-60H343v60Zm0-90h395v-60H343v60Zm0-90h395v-60H343v60Zm-83 400q-24 0-42-18t-18-42V236q0-24 18-42t42-18h560q24 0 42 18t18 42v560q0 24-18 42t-42 18H260Zm0-60h560V236H260v560ZM140 976q-24 0-42-18t-18-42V296h60v620h620v60H140Zm120-740v560-560Z"
+                        },
+                        "_owner": null
+                      }
+                    },
+                    "_owner": null
+                  }
+                },
+                {
+                  "type": "tab",
+                  "id": "#c36a4350-2564-4d87-afa5-849d4bd7a46d",
                   "name": "Main",
                   "component": "editor",
                   "config": {
@@ -237,7 +271,7 @@
                 {
                   "type": "tabset",
                   "id": "#223f4f69-0ad4-49d7-bda1-4b0decab61a5",
-                  "weight": 2,
+                  "weight": 0.5,
                   "children": [
                     {
                       "type": "tab",
@@ -252,7 +286,7 @@
                 {
                   "type": "tabset",
                   "id": "#7934566f-fb7c-4b44-8caf-9dcba09c0a94",
-                  "weight": 1,
+                  "weight": 0.5,
                   "children": [
                     {
                       "type": "tab",
@@ -466,10 +500,40 @@
               "type": "tabset",
               "id": "RUNTIME-EDITORS",
               "weight": 60,
-              "selected": -1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
-              "children": []
+              "children": [
+                {
+                  "type": "tab",
+                  "id": "#8583ba74-7612-4c16-a78e-13f7255380c8",
+                  "name": "Main",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[power-analyzer.eez-project]:/userPages/0",
+                    "permanent": false
+                  },
+                  "icon": {
+                    "type": "svg",
+                    "key": null,
+                    "ref": null,
+                    "props": {
+                      "viewBox": "0 96 960 960",
+                      "fill": "currentColor",
+                      "children": {
+                        "type": "path",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "d": "M343 636h225v-60H343v60Zm0-90h395v-60H343v60Zm0-90h395v-60H343v60Zm-83 400q-24 0-42-18t-18-42V236q0-24 18-42t42-18h560q24 0 42 18t18 42v560q0 24-18 42t-42 18H260Zm0-60h560V236H260v560ZM140 976q-24 0-42-18t-18-42V296h60v620h620v60H140Zm120-740v560-560Z"
+                        },
+                        "_owner": null
+                      }
+                    },
+                    "_owner": null
+                  }
+                }
+              ],
+              "active": true
             },
             {
               "type": "row",
@@ -625,7 +689,8 @@
                   "component": "editor",
                   "enableClose": false
                 }
-              ]
+              ],
+              "active": true
             }
           ]
         }
@@ -935,16 +1000,90 @@
       "selection": {
         "0": {
           "0": {},
-          "2": {},
-          "3": {}
+          "1": {}
         }
       },
       "transform": {
         "translate": {
-          "x": -240,
-          "y": -286.262574672699
+          "x": -383.48614501953125,
+          "y": -216.93053627014157
+        },
+        "scale": 1.25
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[power-analyzer.eez-project]:/userPages/1[flow-state]": {
+      "selection": {
+        "0": {
+          "0": {
+            "$selected": true
+          },
+          "1": {}
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -334.15277099609375,
+          "y": -168.93058204650876
+        },
+        "scale": 1.25
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[power-analyzer.eez-project]:/userWidgets/0[flow-state]": {
+      "selection": {
+        "0": {
+          "0": {},
+          "1": {},
+          "4": {}
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -435.8083094787596,
+          "y": -214.93178153991698
         },
         "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[power-analyzer.eez-project]:/actions/0[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": 0,
+          "y": -1.33331298828125
+        },
+        "scale": 1
+      }
+    },
+    "[power-analyzer.eez-project]:/userPages/2[flow-state]": {
+      "selection": {
+        "0": {
+          "1": {}
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -334.15277099609375,
+          "y": -168.93058204650876
+        },
+        "scale": 1.25
       },
       "timeline": {
         "isEditorActive": false,
@@ -969,8 +1108,9 @@
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "MISCELLANEOUS",
-    "BACKGROUND"
+    "BACKGROUND",
+    "TEXT",
+    "MISCELLANEOUS"
   ],
   "showInactiveFlowsInDebugger": true
 }
