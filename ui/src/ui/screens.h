@@ -1,6 +1,8 @@
 #ifndef EEZ_LVGL_UI_SCREENS_H
 #define EEZ_LVGL_UI_SCREENS_H
 
+#include "lv_i18n/lv_i18n.h"
+
 #include <lvgl/lvgl.h>
 
 #ifdef __cplusplus
@@ -46,11 +48,6 @@ typedef struct _objects_t {
     lv_obj_t *obj19;
     lv_obj_t *obj2;
     lv_obj_t *obj20;
-    lv_obj_t *obj21;
-    lv_obj_t *obj22;
-    lv_obj_t *obj23;
-    lv_obj_t *obj24;
-    lv_obj_t *obj25;
     lv_obj_t *obj3;
     lv_obj_t *obj4;
     lv_obj_t *obj5;

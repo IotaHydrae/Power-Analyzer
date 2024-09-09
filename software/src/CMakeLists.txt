@@ -149,6 +149,7 @@ file(GLOB_RECURSE COMMON_SOURCES
     gt911.c
     porting/lv_port_disp_template.c
     porting/lv_port_indev_template.c
+    lv_i18n/lv_i18n.c
     i2c_tools.c
     backlight.c
 )
@@ -163,6 +164,7 @@ add_executable(${PROJECT_NAME} ${COMMON_SOURCES} ${UI_SOURCES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
+    ${CMAKE_CURRENT_LIST_DIR}/lv_i18n/
     ${CMAKE_CURRENT_LIST_DIR}/ui/
     ${CMAKE_CURRENT_LIST_DIR}/ui_ext/
 )

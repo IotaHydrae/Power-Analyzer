@@ -2,9 +2,6 @@
   "navigation": {
     "selectedUserPageObject": "[power-analyzer.eez-project]:/userPages/0",
     "selectedUserWidgetObject": "[power-analyzer.eez-project]:/userWidgets/0",
-    "selectedActionObject": "[power-analyzer.eez-project]:/actions/-1",
-    "selectedFontObject": "[power-analyzer.eez-project]:/fonts/1",
-    "selectedBitmapObject": "[power-analyzer.eez-project]:/bitmaps/-1",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Widgets"
     }
@@ -1005,10 +1002,10 @@
       },
       "transform": {
         "translate": {
-          "x": -383.48614501953125,
-          "y": -216.93053627014157
+          "x": -256.29560953776036,
+          "y": -125.58506679342247
         },
-        "scale": 1.25
+        "scale": 1
       },
       "timeline": {
         "isEditorActive": false,

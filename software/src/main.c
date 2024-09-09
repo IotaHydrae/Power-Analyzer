@@ -40,6 +40,7 @@
 #include "lvgl/lvgl.h"
 #include "lvgl/demos/lv_demos.h"
 #include "lvgl/examples/lv_examples.h"
+#include "lv_i18n/lv_i18n.h"
 #include "porting/lv_port_disp_template.h"
 #include "porting/lv_port_indev_template.h"
 
@@ -104,6 +105,9 @@ int main(void)
 
     lv_init();
     lv_port_disp_init();
+
+    lv_i18n_init(lv_i18n_language_pack);
+    lv_i18n_set_locale("zh-CN");
 
 #if INDEV_DRV_USED
     lv_port_indev_init();

@@ -1,8 +1,11 @@
 #include "lvgl.h"
+#include "lv_i18n/lv_i18n.h"
 #include "ui/ui.h"
 #include "ui/screens.h"
 
 #include "ui_ext.h"
+
+LV_FONT_DECLARE(ui_font_ns18);
 
 enum {
     LV_MENU_ITEM_BUILDER_VARIANT_1,
@@ -18,6 +21,8 @@ static lv_obj_t * create_slider(lv_obj_t * parent,
                                 const char * icon, const char * txt, int32_t min, int32_t max, int32_t val);
 static lv_obj_t * create_switch(lv_obj_t * parent,
                                 const char * icon, const char * txt, bool chk);
+
+static uint8_t __attribute__((section(".settings"))) bl_lvl[1024] = {10};
 static void back_event_handler(lv_event_t * e)
 {
     lv_obj_t * obj = lv_event_get_target(e);
@@ -63,6 +68,7 @@ static lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char *
 
     if(txt) {
         label = lv_label_create(obj);
+        lv_obj_set_style_text_font(label, &ui_font_ns18, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_text(label, txt);
         lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL_CIRCULAR);
         lv_obj_set_flex_grow(label, 1);
@@ -105,6 +111,8 @@ static lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char
 
 void page_settings_finalize(void)
 {
+    bl_lvl[0] = 1;
+
     lv_obj_t *menu = objects.settings_menu_settings;
     lv_menu_set_mode_root_back_btn(menu, LV_MENU_ROOT_BACK_BTN_DISABLED);
 
@@ -163,21 +171,21 @@ void page_settings_finalize(void)
     lv_obj_add_event_cb(lv_obj_get_child(cont, 2), switch_handler, LV_EVENT_VALUE_CHANGED, menu);
 
     /*Create a root page*/
-    root_page = lv_menu_page_create(menu, "Settings");
+    root_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(root_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     section = lv_menu_section_create(root_page);
-    cont = create_text(section, LV_SYMBOL_SETTINGS, "Mechanics", LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_text(section, NULL, _("settings_automatic_protection"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_mechanics_page);
-    cont = create_text(section, LV_SYMBOL_AUDIO, "Sound", LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_text(section, NULL, _("settings_ui"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_sound_page);
-    cont = create_text(section, LV_SYMBOL_SETTINGS, "Display", LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_text(section, NULL, _("settings_calibration"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_display_page);
 
-    create_text(root_page, NULL, "Others", LV_MENU_ITEM_BUILDER_VARIANT_1);
+    // create_text(root_page, NULL, "Others", LV_MENU_ITEM_BUILDER_VARIANT_1);
     section = lv_menu_section_create(root_page);
-    cont = create_text(section, NULL, "About", LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_text(section, NULL, _("settings_about"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_about_page);
-    cont = create_text(section, LV_SYMBOL_SETTINGS, "Menu mode", LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_text(section, LV_SYMBOL_SETTINGS, _("settings_system"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_menu_mode_page);
 
     lv_menu_set_sidebar_page(menu, root_page);
