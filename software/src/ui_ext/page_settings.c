@@ -5,16 +5,16 @@
 
 #include "ui_ext.h"
 
-LV_FONT_DECLARE(ui_font_ns18);
+LV_FONT_DECLARE(ui_font_ns14);
 
 enum {
     LV_MENU_ITEM_BUILDER_VARIANT_1,
     LV_MENU_ITEM_BUILDER_VARIANT_2
 };
 typedef uint8_t lv_menu_builder_variant_t;
+
 static void back_event_handler(lv_event_t * e);
 static void switch_handler(lv_event_t * e);
-lv_obj_t * root_page;
 static lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char * txt,
                               lv_menu_builder_variant_t builder_variant);
 static lv_obj_t * create_slider(lv_obj_t * parent,
@@ -22,7 +22,7 @@ static lv_obj_t * create_slider(lv_obj_t * parent,
 static lv_obj_t * create_switch(lv_obj_t * parent,
                                 const char * icon, const char * txt, bool chk);
 
-static uint8_t __attribute__((section(".settings"))) bl_lvl[1024] = {10};
+lv_obj_t * root_page;
 static void back_event_handler(lv_event_t * e)
 {
     lv_obj_t * obj = lv_event_get_target(e);
@@ -68,7 +68,7 @@ static lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char *
 
     if(txt) {
         label = lv_label_create(obj);
-        lv_obj_set_style_text_font(label, &ui_font_ns18, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_font(label, &ui_font_ns14, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_label_set_text(label, txt);
         lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL_CIRCULAR);
         lv_obj_set_flex_grow(label, 1);
@@ -78,6 +78,26 @@ static lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char *
         lv_obj_add_flag(img, LV_OBJ_FLAG_FLEX_IN_NEW_TRACK);
         lv_obj_swap(img, label);
     }
+
+    return obj;
+}
+
+static lv_obj_t * create_text_with_detail(lv_obj_t *parent, const char *txt, const char * detail)
+{
+    lv_obj_t * obj = lv_menu_cont_create(parent);
+
+    lv_obj_t * lbl_left = NULL;
+    lv_obj_t * lbl_detail = NULL;
+
+    lbl_left = lv_label_create(obj);
+    lv_obj_set_style_text_font(lbl_left, &ui_font_ns14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(lbl_left, txt);
+    lv_obj_set_flex_grow(lbl_left, 1);
+
+    lbl_detail = lv_label_create(obj);
+    lv_obj_set_style_text_font(lbl_detail, &ui_font_ns14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(lbl_detail, detail);
+    lv_obj_set_align(obj, LV_ALIGN_RIGHT_MID);
 
     return obj;
 }
@@ -111,8 +131,6 @@ static lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char
 
 void page_settings_finalize(void)
 {
-    bl_lvl[0] = 1;
-
     lv_obj_t *menu = objects.settings_menu_settings;
     lv_menu_set_mode_root_back_btn(menu, LV_MENU_ROOT_BACK_BTN_DISABLED);
 
@@ -124,9 +142,8 @@ void page_settings_finalize(void)
     lv_obj_set_style_pad_hor(sub_mechanics_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_mechanics_page);
     section = lv_menu_section_create(sub_mechanics_page);
-    create_slider(section, LV_SYMBOL_SETTINGS, "Velocity", 0, 150, 120);
-    create_slider(section, LV_SYMBOL_SETTINGS, "Acceleration", 0, 150, 50);
-    create_slider(section, LV_SYMBOL_SETTINGS, "Weight limit", 0, 150, 80);
+    create_switch(section, NULL, _("settings_automatic_voltage_cut"), false);
+    create_switch(section, NULL, _("settings_automatic_current_cut"), false);
 
     lv_obj_t * sub_sound_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_sound_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
@@ -140,28 +157,31 @@ void page_settings_finalize(void)
     section = lv_menu_section_create(sub_display_page);
     create_slider(section, LV_SYMBOL_SETTINGS, "Brightness", 0, 150, 100);
 
-    lv_obj_t * sub_software_info_page = lv_menu_page_create(menu, NULL);
-    lv_obj_set_style_pad_hor(sub_software_info_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
-    section = lv_menu_section_create(sub_software_info_page);
-    create_text(section, NULL, "Version 1.0", LV_MENU_ITEM_BUILDER_VARIANT_1);
+    // lv_obj_t * sub_software_info_page = lv_menu_page_create(menu, NULL);
+    // lv_obj_set_style_pad_hor(sub_software_info_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
+    // section = lv_menu_section_create(sub_software_info_page);
+    // create_text(section, NULL, "Version 1.0", LV_MENU_ITEM_BUILDER_VARIANT_1);
 
-    lv_obj_t * sub_legal_info_page = lv_menu_page_create(menu, NULL);
-    lv_obj_set_style_pad_hor(sub_legal_info_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
-    section = lv_menu_section_create(sub_legal_info_page);
-    for(uint32_t i = 0; i < 15; i++) {
-        create_text(section, NULL,
-                    "This is a long long long long long long long long long text, if it is long enough it may scroll.",
-                    LV_MENU_ITEM_BUILDER_VARIANT_1);
-    }
+    // lv_obj_t * sub_legal_info_page = lv_menu_page_create(menu, NULL);
+    // lv_obj_set_style_pad_hor(sub_legal_info_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
+    // section = lv_menu_section_create(sub_legal_info_page);
+    // for(uint32_t i = 0; i < 15; i++) {
+    //     create_text(section, NULL,
+    //                 "This is a long long long long long long long long long text, if it is long enough it may scroll.",
+    //                 LV_MENU_ITEM_BUILDER_VARIANT_1);
+    // }
 
     lv_obj_t * sub_about_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_about_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_about_page);
     section = lv_menu_section_create(sub_about_page);
-    cont = create_text(section, NULL, "Software information", LV_MENU_ITEM_BUILDER_VARIANT_1);
-    lv_menu_set_load_page_event(menu, cont, sub_software_info_page);
-    cont = create_text(section, NULL, "Legal information", LV_MENU_ITEM_BUILDER_VARIANT_1);
-    lv_menu_set_load_page_event(menu, cont, sub_legal_info_page);
+    // cont = create_text(section, NULL, _("settings_sw_ver"), LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_text_with_detail(section, _("settings_sn_code"), "0x12345678");
+    cont = create_text_with_detail(section, _("settings_sw_ver"), "0.0.1");
+    cont = create_text_with_detail(section, _("settings_hw_ver"), "0.0.1");
+    // lv_menu_set_load_page_event(menu, cont, sub_software_info_page);
+    // cont = create_text(section, NULL, "Legal information", LV_MENU_ITEM_BUILDER_VARIANT_1);
+    // lv_menu_set_load_page_event(menu, cont, sub_legal_info_page);
 
     lv_obj_t * sub_menu_mode_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_menu_mode_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);

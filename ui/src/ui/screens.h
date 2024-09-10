@@ -30,6 +30,7 @@ typedef struct _objects_t {
     lv_obj_t *home_nav_bar;
     lv_obj_t *meter_btn_home;
     lv_obj_t *meter_btn_meter;
+    lv_obj_t *meter_btn_meter_img;
     lv_obj_t *meter_btn_settings;
     lv_obj_t *meter_btn_statistics;
     lv_obj_t *meter_btn_usb;

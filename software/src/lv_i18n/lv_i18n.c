@@ -20,9 +20,14 @@ static inline uint32_t op_t(uint32_t val) { UNUSED(val); return 0; }
 static lv_i18n_phrase_t zh_cn_singulars[] = {
     {"title1", "此处显示基本信息"},
     {"settings_automatic_protection", "自动保护设置"},
+    {"settings_automatic_voltage_cut", "自动断开电压"},
+    {"settings_automatic_current_cut", "自动断开电流"},
     {"settings_ui", "界面设置"},
     {"settings_calibration", "校准"},
     {"settings_about", "关于"},
+    {"settings_sn_code", "SN 码"},
+    {"settings_sw_ver", "软件版本号"},
+    {"settings_hw_ver", "硬件版本号"},
     {"settings_system", "系统设置"},
     {NULL, NULL} // End mark
 };
