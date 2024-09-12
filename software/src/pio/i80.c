@@ -100,8 +100,8 @@ define_i80_write_piox(i80_write_pio16, uint16_t)
 
 int __time_critical_func(i80_write_buf_rs)(void *buf, size_t len, bool rs)
 {
-    // i80_wait_idle(g_i80.pio, g_i80.sm);
-    i80_set_rs(rs);
+    i80_wait_idle(g_i80.pio, g_i80.sm);
+    i80_set_rs_cs(rs, 0);
 
     switch (g_i80.db_count) {
     case 8:
@@ -115,8 +115,8 @@ int __time_critical_func(i80_write_buf_rs)(void *buf, size_t len, bool rs)
         break;
     }
 
-    // i80_wait_idle(g_i80.pio, g_i80.sm);
-    // i80_set_rs_cs(rs, 0);
+    i80_wait_idle(g_i80.pio, g_i80.sm);
+    i80_set_rs_cs(rs, 0);
     return 0;
 }
 
@@ -156,8 +156,8 @@ int i80_pio_init(uint8_t db_base, uint8_t db_count, uint8_t pin_wr)
 
     printf("I80_BUS_WR_CLK_KHZ : %d\n", I80_BUS_WR_CLK_KHZ);
     i80_program_init(
-        g_i80.pio, g_i80.sm, g_i80.offset,
-        g_i80.db_base, g_i80.db_count,
+        g_i80.pio, g_i80.sm, g_i80.offset, 
+        g_i80.db_base, g_i80.db_count, 
         g_i80.pin_wr, g_i80.clk_div
     );
 

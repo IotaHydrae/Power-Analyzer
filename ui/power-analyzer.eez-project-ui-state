@@ -2,6 +2,7 @@
   "navigation": {
     "selectedUserPageObject": "[power-analyzer.eez-project]:/userPages/0",
     "selectedUserWidgetObject": "[power-analyzer.eez-project]:/userWidgets/0",
+    "selectedFontObject": "[power-analyzer.eez-project]:/fonts/2",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Widgets"
     }
@@ -24,6 +25,7 @@
           },
           {
             "type": "border",
+            "selected": 1,
             "size": 240,
             "location": "right",
             "children": [
@@ -183,10 +185,20 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 60,
-              "selected": 2,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
+                {
+                  "type": "tab",
+                  "id": "#5d123180-68a3-400b-9f40-4eb6404c83fb",
+                  "name": "NS14",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[power-analyzer.eez-project]:/fonts/2",
+                    "permanent": false
+                  },
+                  "icon": "material:font_download"
+                },
                 {
                   "type": "tab",
                   "id": "#38c5a379-11c7-49b9-b93c-f46cd6ef859b",

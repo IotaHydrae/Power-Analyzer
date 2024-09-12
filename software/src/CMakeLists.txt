@@ -129,7 +129,7 @@ target_compile_definitions(pio_i80 PUBLIC PIO_USE_DMA=${PIO_USE_DMA})
 target_compile_definitions(pio_i80 PUBLIC I80_BUS_WR_CLK_KHZ=${I80_BUS_WR_CLK_KHZ})
 
 # include factory test library here
-# add_subdirectory(factory)
+add_subdirectory(factory)
 
 # user define common source files
 file(GLOB_RECURSE COMMON_SOURCES
@@ -152,6 +152,7 @@ file(GLOB_RECURSE COMMON_SOURCES
     lv_i18n/lv_i18n.c
     i2c_tools.c
     backlight.c
+    flash.c
 )
 
 file(GLOB_RECURSE UI_SOURCES
@@ -161,6 +162,9 @@ file(GLOB_RECURSE UI_SOURCES
 )
 
 add_executable(${PROJECT_NAME} ${COMMON_SOURCES} ${UI_SOURCES})
+
+set(LINK_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/memmap_default.ld")
+pico_set_linker_script(${PROJECT_NAME} ${LINK_SCRIPT})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
@@ -176,16 +180,18 @@ target_link_libraries(${PROJECT_NAME}
     pico_bit_ops
     pico_mem_ops
     pico_multicore
+    pico_async_context_freertos
     FreeRTOS-Kernel-Heap3
     pico_bootsel_via_double_reset
     pio_i80
     hardware_i2c
+    hardware_dma
     hardware_pwm
     hardware_flash
     hardware_sync
     lvgl lvgl::demos lvgl::examples
     # factory_test
-    )
+)
 
 # add target common defines here
 target_compile_definitions(${PROJECT_NAME} PUBLIC DEFAULT_SYS_CLK_KHZ=${SYS_CLK_KHZ})
@@ -233,7 +239,7 @@ math(EXPR FLASH_CLK_KHZ "${SYS_CLK_KHZ} / ${PICO_FLASH_SPI_CLKDIV}")
 target_compile_definitions(bs2_default PRIVATE PICO_FLASH_SPI_CLKDIV=${PICO_FLASH_SPI_CLKDIV})
 target_compile_definitions(${PROJECT_NAME} PRIVATE FLASH_CLK_KHZ=${FLASH_CLK_KHZ})
 
-pico_enable_stdio_usb(${PROJECT_NAME} 0)
-pico_enable_stdio_uart(${PROJECT_NAME} 1)
+# pico_enable_stdio_usb(${PROJECT_NAME} 0)
+# pico_enable_stdio_uart(${PROJECT_NAME} 1)
 
 pico_add_extra_outputs(${PROJECT_NAME})

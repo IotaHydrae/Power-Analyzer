@@ -100,13 +100,20 @@ extern int tft_driver_init();
 extern int i80_pio_init(uint8_t db_base, uint8_t db_count, uint8_t pin_wr);
 extern int i80_write_buf_rs(void *buf, size_t len, bool rs);
 
+extern void fbtft_write_gpio8_wr_rs(struct tft_priv *priv, void *buf, size_t len, bool rs);
 extern void fbtft_write_gpio16_wr_rs(struct tft_priv *priv, void *buf, size_t len, bool rs);
 
 /* rs=0 means writing register, rs=1 means writing data */
 #if DISP_OVER_PIO
     #define write_buf_rs(p, b, l, r) i80_write_buf_rs(b, l, r)
 #else
-    #define write_buf_rs(p, b, l, r) fbtft_write_gpio16_wr_rs(p, b, l, r)
+    #if LCD_PIN_DB_COUNT == 8
+        #define write_buf_rs(p, b, l, r) fbtft_write_gpio8_wr_rs(p, b, l, r)
+    #elif LCD_PIN_DB_COUNT == 16
+        #define write_buf_rs(p, b, l, r) fbtft_write_gpio16_wr_rs(p, b, l, r)
+    #else
+        #error "LCD_PIN_DB_COUNT must be 8 or 16"
+    #endif
 #endif
 
 extern void tft_video_flush(int xs, int ys, int xe, int ye, void *vmem, uint32_t len);
@@ -117,14 +124,6 @@ extern void tft_write_reg(struct tft_priv *priv, int len, ...);
 
 extern void tft_write_reg8(struct tft_priv *priv, int len, ...);
 extern void tft_write_reg16(struct tft_priv *priv, int len, ...);
-
-// #if LCD_PIN_DB_COUNT == 8
-// #define write_reg(priv, ...) \
-//     tft_write_reg8(priv, NUMARGS(__VA_ARGS__), __VA_ARGS__)
-// #elif LCD_PIN_DB_COUNT == 16
-// #define write_reg(priv, ...) \
-//     tft_write_reg16(priv, NUMARGS(__VA_ARGS__), __VA_ARGS__)
-// #endif
 
 #define write_reg(priv, ...) \
     priv->tftops->write_reg(priv, NUMARGS(__VA_ARGS__), __VA_ARGS__)

@@ -44,6 +44,62 @@ static const UBaseType_t XArrayIndex = 1;
 
 /* ----------------------- Default TFT operations -------------------------- */
 
+#if LCD_PIN_DB_COUNT == 8
+static void fbtft_write_gpio8_wr(struct tft_priv *priv, void *buf, size_t len)
+{
+    u8 data;
+    int i;
+#ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+    static u8 prev_data;
+#endif
+
+    /* Start writing by pulling down /WR */
+    dm_gpio_set_value(priv->gpio.wr, 1);
+
+    while (len) {
+        data = *(u8 *)buf;
+
+        /* Start writing by pulling down /WR */
+        dm_gpio_set_value(priv->gpio.wr, 0);
+
+        /* Set data */
+#ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+        if (data == prev_data) {
+            dm_gpio_set_value(priv->gpio.wr, 1); /* used as delay */
+        } else {
+            for (i = 0; i < 8; i++) {
+                if ((data & 1) != (prev_data & 1))
+                    dm_gpio_set_value(priv->gpio.db[i],
+                                      data & 1);
+                data >>= 1;
+                prev_data >>= 1;
+            }
+        }
+#else
+        for (i = 0; i < 8; i++) {
+            dm_gpio_set_value(&priv->gpio.db[i], data & 1);
+            data >>= 1;
+        }
+#endif
+
+        /* Pullup /WR */
+        dm_gpio_set_value(priv->gpio.wr, 1);
+
+#ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+        prev_data = *(u8 *)buf;
+#endif
+        buf += 1;
+        len -= 1;
+    }
+}
+
+void fbtft_write_gpio8_wr_rs(struct tft_priv *priv, void *buf, size_t len, bool rs)
+{
+    dm_gpio_set_value(priv->gpio.rs, rs);
+    fbtft_write_gpio8_wr(priv, buf, len);
+}
+
+#else
 static void fbtft_write_gpio16_wr(struct tft_priv *priv, void *buf, size_t len)
 {
     u16 data;
@@ -57,10 +113,10 @@ static void fbtft_write_gpio16_wr(struct tft_priv *priv, void *buf, size_t len)
 
     while (len) {
         data = *(u16 *)buf;
-        
+
         /* Start writing by pulling down /WR */
         dm_gpio_set_value(priv->gpio.wr, 0);
-   
+
         /* Set data */
 #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
         if (data == prev_data) {
@@ -80,10 +136,10 @@ static void fbtft_write_gpio16_wr(struct tft_priv *priv, void *buf, size_t len)
             data >>= 1;
         }
 #endif
-        
+
         /* Pullup /WR */
         dm_gpio_set_value(priv->gpio.wr, 1);
-        
+
 #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
         prev_data = *(u16 *)buf;
 #endif
@@ -97,6 +153,7 @@ void fbtft_write_gpio16_wr_rs(struct tft_priv *priv, void *buf, size_t len, bool
     dm_gpio_set_value(priv->gpio.rs, rs);
     fbtft_write_gpio16_wr(priv, buf, len);
 }
+#endif
 
 #define define_tft_write_reg(func, reg_type) \
 void func(struct tft_priv *priv, int len, ...)  \
@@ -148,10 +205,10 @@ static void inline tft_set_addr_win(struct tft_priv *priv, int xs, int ys, int x
 {
     /* set column adddress */
     write_reg(priv, 0x2A, xs >> 8, xs & 0xFF, xe >> 8, xe & 0xFF);
-    
+
     /* set row address */
     write_reg(priv, 0x2B, ys >> 8, ys & 0xFF, ye >> 8, ye & 0xFF);
-    
+
     /* write start */
     write_reg(priv, 0x2C);
 }
@@ -167,7 +224,7 @@ static int tft_clear(struct tft_priv *priv, u16 clear)
     priv->tftops->set_addr_win(priv, 0, 0,
                          priv->display->xres - 1,
                          priv->display->yres - 1);
-    
+
     for (x = 0; x < width; x++) {
         for (y = 0; y < height; y++) {
             write_buf_rs(priv, &clear, sizeof(u16), 1);
@@ -218,8 +275,6 @@ static int tft_gpio_init(struct tft_priv *priv)
 
 static int tft_hw_init(struct tft_priv *priv)
 {
-    int ret;
-
     pr_debug("%s\n", __func__);
 
     printf("TFT interface type: %s\n", DISP_OVER_PIO ? "PIO" : "GPIO");
@@ -234,7 +289,7 @@ static int tft_hw_init(struct tft_priv *priv)
         pr_error("init_display must be provided\n");
         return -1;
     }
-    
+
     pr_debug("initializing display...\n");
     priv->tftops->init_display(priv);
 
@@ -326,7 +381,7 @@ int tft_probe(struct tft_display *display)
     priv->tftops = (struct tft_ops *)malloc(sizeof(struct tft_ops));
     if (!priv->tftops) {
         pr_debug("failed to allocate tftops\n");
-        return -1;
+        goto exit_free_priv_buf;
     }
 
     priv->display = display;

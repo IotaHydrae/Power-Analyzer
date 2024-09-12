@@ -28,6 +28,7 @@ static lv_i18n_phrase_t zh_cn_singulars[] = {
     {"settings_sn_code", "SN 码"},
     {"settings_sw_ver", "软件版本号"},
     {"settings_hw_ver", "硬件版本号"},
+    {"settings_boot_count", "启动次数"},
     {"settings_system", "系统设置"},
     {NULL, NULL} // End mark
 };

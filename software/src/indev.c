@@ -28,6 +28,8 @@ static bool __indev_is_pressed(struct indev_priv *priv)
 {
     if (priv->ops->is_pressed)
         return priv->ops->is_pressed(priv);
+
+    return false;
 }
 
 bool indev_is_pressed(void)
@@ -94,6 +96,8 @@ static u16 __indev_read_x(struct indev_priv *priv)
 {
     if (priv->ops->read_x)
         return priv->ops->read_x(priv);
+
+    return 0;
 }
 
 u16 indev_read_x(void)
@@ -105,11 +109,13 @@ static u16 __indev_read_y(struct indev_priv *priv)
 {
     if (priv->ops->read_y)
         return priv->ops->read_y(priv);
+
+    return 0;
 }
 
 u16 indev_read_y(void)
 {
-    return __indev_read_y(&g_indev_priv);
+    return (__indev_read_y(&g_indev_priv) - 1);
 }
 
 static void indev_reset(struct indev_priv *priv)

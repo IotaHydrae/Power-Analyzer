@@ -1,9 +1,12 @@
+#include <stdio.h>
+
 #include "lvgl.h"
 #include "lv_i18n/lv_i18n.h"
 #include "ui/ui.h"
 #include "ui/screens.h"
 
 #include "ui_ext.h"
+#include "settings.h"
 
 LV_FONT_DECLARE(ui_font_ns14);
 
@@ -129,6 +132,20 @@ static lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char
     return obj;
 }
 
+static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    // lv_obj_t * menu = lv_event_get_user_data(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        lv_log("%s, chk : %s\n", __func__, lv_obj_has_state(obj, LV_STATE_CHECKED)? "true" : "false");
+    }
+
+    /* save this setting to flash */
+    
+}
+
 void page_settings_finalize(void)
 {
     lv_obj_t *menu = objects.settings_menu_settings;
@@ -142,8 +159,11 @@ void page_settings_finalize(void)
     lv_obj_set_style_pad_hor(sub_mechanics_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_mechanics_page);
     section = lv_menu_section_create(sub_mechanics_page);
-    create_switch(section, NULL, _("settings_automatic_voltage_cut"), false);
-    create_switch(section, NULL, _("settings_automatic_current_cut"), false);
+
+    cont = create_switch(section, NULL, _("settings_automatic_voltage_cut"), false);
+    lv_obj_add_event_cb(lv_obj_get_child(cont, 1), switch_settings_automatic_voltage_cut_handler, LV_EVENT_VALUE_CHANGED, NULL);
+
+    cont = create_switch(section, NULL, _("settings_automatic_current_cut"), false);
 
     lv_obj_t * sub_sound_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_sound_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
@@ -179,6 +199,9 @@ void page_settings_finalize(void)
     cont = create_text_with_detail(section, _("settings_sn_code"), "0x12345678");
     cont = create_text_with_detail(section, _("settings_sw_ver"), "0.0.1");
     cont = create_text_with_detail(section, _("settings_hw_ver"), "0.0.1");
+    char boot_count[16];
+    sprintf(boot_count, "%d", settings_get_boot_count());
+    cont = create_text_with_detail(section, _("settings_boot_count"), boot_count);
     // lv_menu_set_load_page_event(menu, cont, sub_software_info_page);
     // cont = create_text(section, NULL, "Legal information", LV_MENU_ITEM_BUILDER_VARIANT_1);
     // lv_menu_set_load_page_event(menu, cont, sub_legal_info_page);

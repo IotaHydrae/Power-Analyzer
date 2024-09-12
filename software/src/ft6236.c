@@ -117,7 +117,7 @@ static struct indev_spec ft6236 = {
 
     .i2c = {
         .addr = FT6236_ADDR,
-        .master = i2c1,
+        .master = i2c0,
         .speed = FT6236_DEF_SPEED,
         .pin_scl = FT6236_PIN_SCL,
         .pin_sda = FT6236_PIN_SDA,
