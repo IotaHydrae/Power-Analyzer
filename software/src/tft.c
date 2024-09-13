@@ -28,7 +28,6 @@
 #include <stdbool.h>
 
 #include "pico/stdio.h"
-#include "pico/stdio_uart.h"
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 

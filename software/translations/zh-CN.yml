@@ -11,3 +11,9 @@
   settings_hw_ver: 硬件版本号
   settings_boot_count: 启动次数
   settings_system: 系统设置
+  settings_range_sw_algo_sel: 量程切换算法选择
+  settings_range_sw_algo_sel_0: 实时切换
+  settings_range_sw_algo_sel_1: 平滑切换
+  settings_device_addr: 设备通讯地址
+  settings_factory_reset: 系统还原
+  settings_language: 语言设置

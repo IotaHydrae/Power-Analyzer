@@ -131,7 +131,7 @@ uint settings_get_boot_count(void)
     return current_settings->boot_count;
 }
 
-void increase_boot_count(void)
+static void increase_boot_count(void)
 {
     switch (current_settings->partition) {
     case SETTINGS_1:
@@ -186,11 +186,11 @@ void settings_init(void)
     dump_curr_settings();
     load_settings();
 
-    // if (current_settings->magic != MAGIC_HEADER) {
-    //     /* The settings are corrupted, restore defaults */
-    //     printf("Settings corrupted, restoring defaults\n");
-    //     restore_defaults_settings();
-    // }
+    if (current_settings->magic != MAGIC_HEADER) {
+        /* The settings are corrupted, restore defaults */
+        printf("Settings corrupted, restoring defaults\n");
+        restore_defaults_settings();
+    }
 
     increase_boot_count();
     save_settings();

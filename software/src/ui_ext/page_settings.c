@@ -85,6 +85,32 @@ static lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char *
     return obj;
 }
 
+static lv_obj_t * create_btn(lv_obj_t * parent, const char * icon, const char * txt)
+{
+    lv_obj_t *cont = lv_menu_cont_create(parent);
+    lv_obj_t *obj = lv_btn_create(cont);
+
+    lv_obj_t * img = NULL;
+    lv_obj_t * label = NULL;
+
+    if(icon) {
+        img = lv_img_create(obj);
+        lv_img_set_src(img, icon);
+    }
+
+    if(txt) {
+        label = lv_label_create(obj);
+        lv_obj_set_style_text_font(label, &ui_font_ns14, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_label_set_text(label, txt);
+        // lv_label_set_long_mode(label, LV_LABEL_LONG_SCROLL_CIRCULAR);
+        lv_obj_set_flex_grow(label, 1);
+        if (img)
+            lv_obj_align_to(label, img, LV_ALIGN_LEFT_MID, 20, 0);
+    }
+
+    return cont;
+}
+
 static lv_obj_t * create_text_with_detail(lv_obj_t *parent, const char *txt, const char * detail)
 {
     lv_obj_t * obj = lv_menu_cont_create(parent);
@@ -128,6 +154,32 @@ static lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char
 
     lv_obj_t * sw = lv_switch_create(obj);
     lv_obj_add_state(sw, chk ? LV_STATE_CHECKED : 0);
+
+    return obj;
+}
+
+static lv_obj_t * create_dropdown(lv_obj_t *parent, const char *icon,  const char *txt, const char *opts[])
+{
+    lv_obj_t * obj = create_text(parent, icon, txt, LV_MENU_ITEM_BUILDER_VARIANT_1);
+
+    static lv_style_t style_dd;
+    lv_style_init(&style_dd);
+    lv_style_set_text_font(&style_dd, &ui_font_ns14);
+
+    lv_obj_t * ddlist = lv_dropdown_create(obj);
+    lv_obj_add_style(ddlist, &style_dd, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    lv_dropdown_set_options(ddlist, "");
+    const char **ptr = opts;
+    while (*ptr != NULL)  {
+        lv_dropdown_add_option(ddlist, *ptr, LV_DROPDOWN_POS_LAST);
+        ptr++;
+    }
+
+    lv_dropdown_set_selected_highlight(ddlist, true);
+
+    lv_obj_t *list = lv_dropdown_get_list(ddlist);
+    lv_obj_add_style(list, &style_dd, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     return obj;
 }
@@ -177,20 +229,7 @@ void page_settings_finalize(void)
     section = lv_menu_section_create(sub_display_page);
     create_slider(section, LV_SYMBOL_SETTINGS, "Brightness", 0, 150, 100);
 
-    // lv_obj_t * sub_software_info_page = lv_menu_page_create(menu, NULL);
-    // lv_obj_set_style_pad_hor(sub_software_info_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
-    // section = lv_menu_section_create(sub_software_info_page);
-    // create_text(section, NULL, "Version 1.0", LV_MENU_ITEM_BUILDER_VARIANT_1);
-
-    // lv_obj_t * sub_legal_info_page = lv_menu_page_create(menu, NULL);
-    // lv_obj_set_style_pad_hor(sub_legal_info_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
-    // section = lv_menu_section_create(sub_legal_info_page);
-    // for(uint32_t i = 0; i < 15; i++) {
-    //     create_text(section, NULL,
-    //                 "This is a long long long long long long long long long text, if it is long enough it may scroll.",
-    //                 LV_MENU_ITEM_BUILDER_VARIANT_1);
-    // }
-
+    /* 关于 */
     lv_obj_t * sub_about_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_about_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_about_page);
@@ -206,12 +245,17 @@ void page_settings_finalize(void)
     // cont = create_text(section, NULL, "Legal information", LV_MENU_ITEM_BUILDER_VARIANT_1);
     // lv_menu_set_load_page_event(menu, cont, sub_legal_info_page);
 
+    /* 系统设置 */
     lv_obj_t * sub_menu_mode_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_menu_mode_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_menu_mode_page);
     section = lv_menu_section_create(sub_menu_mode_page);
-    cont = create_switch(section, LV_SYMBOL_AUDIO, "Sidebar enable", true);
-    lv_obj_add_event_cb(lv_obj_get_child(cont, 2), switch_handler, LV_EVENT_VALUE_CHANGED, menu);
+    const char *range_opts[] = {_("settings_range_sw_algo_sel_0"), _("settings_range_sw_algo_sel_1"), NULL};
+    cont = create_dropdown(section, NULL, _("settings_range_sw_algo_sel"), range_opts);
+    const char *lang_opts[] = {"简体中文", "English", NULL};
+    cont = create_dropdown(section, NULL, _("settings_language"), lang_opts);
+    cont = create_text(section, NULL, _("settings_device_addr"), LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_btn(section, LV_SYMBOL_WARNING, _("settings_factory_reset"));
 
     /*Create a root page*/
     root_page = lv_menu_page_create(menu, NULL);
@@ -224,7 +268,6 @@ void page_settings_finalize(void)
     cont = create_text(section, NULL, _("settings_calibration"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_display_page);
 
-    // create_text(root_page, NULL, "Others", LV_MENU_ITEM_BUILDER_VARIANT_1);
     section = lv_menu_section_create(root_page);
     cont = create_text(section, NULL, _("settings_about"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_about_page);
