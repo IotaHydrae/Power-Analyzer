@@ -181,7 +181,7 @@ static lv_obj_t * create_dropdown(lv_obj_t *parent, const char *icon,  const cha
     lv_obj_t *list = lv_dropdown_get_list(ddlist);
     lv_obj_add_style(list, &style_dd, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    return obj;
+    return ddlist;
 }
 
 static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
@@ -196,6 +196,28 @@ static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
 
     /* save this setting to flash */
     
+}
+
+/* dropdown settings language handler */
+static void dd_settings_lang_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        char buf[32];
+        lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
+        LV_LOG_USER("Option: %s", buf);
+
+        if (strcmp(buf, _("settings_lang_simplified_chinese")) == 0) {
+            settings_set_language(SETTINGS_LANG_ZH_CN);
+        } else if (strcmp(buf, _("settings_lang_english")) == 0) {
+            settings_set_language(SETTINGS_LANG_EN_US);
+        } else {
+            settings_set_language(SETTINGS_LANG_ZH_CN);
+        }
+
+        /* TODO: pop up a dialog to ask if user want to restart the device */
+    }
 }
 
 void page_settings_finalize(void)
@@ -217,44 +239,81 @@ void page_settings_finalize(void)
 
     cont = create_switch(section, NULL, _("settings_automatic_current_cut"), false);
 
-    lv_obj_t * sub_sound_page = lv_menu_page_create(menu, NULL);
-    lv_obj_set_style_pad_hor(sub_sound_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
-    lv_menu_separator_create(sub_sound_page);
-    section = lv_menu_section_create(sub_sound_page);
-    create_switch(section, LV_SYMBOL_AUDIO, "Sound", false);
+    lv_obj_t * sub_ui_page = lv_menu_page_create(menu, NULL);
+    lv_obj_set_style_pad_hor(sub_ui_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
+    lv_menu_separator_create(sub_ui_page);
+    section = lv_menu_section_create(sub_ui_page);
+    // create_switch(section, LV_SYMBOL_AUDIO, "Sound", false);
+    const char *ref_rate_opts[] = { "30Hz", "45Hz", "60Hz", NULL};
+    create_dropdown(section, NULL, _("settings_ui_refr_rate"), ref_rate_opts);
 
-    lv_obj_t * sub_display_page = lv_menu_page_create(menu, NULL);
-    lv_obj_set_style_pad_hor(sub_display_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
-    lv_menu_separator_create(sub_display_page);
-    section = lv_menu_section_create(sub_display_page);
-    create_slider(section, LV_SYMBOL_SETTINGS, "Brightness", 0, 150, 100);
+    /* 创建显示模式下拉菜单 */
+    const char *disp_mode_opts[] = {
+        _("settings_ui_disp_mode_0"),
+        _("settings_ui_disp_mode_1"),
+        _("settings_ui_disp_mode_2"),
+        _("settings_ui_disp_mode_3"),
+        NULL
+    };
+    create_dropdown(section, NULL, _("settings_ui_disp_mode"), disp_mode_opts);
+
+    /* 创建折线颜色设置菜单 */
+    const char *line_color_opts[] = {
+        _("settings_ui_line_color_black"),
+        _("settings_ui_line_color_red"),
+        _("settings_ui_line_color_green"),
+        _("settings_ui_line_color_blue"),
+        _("settings_ui_line_color_yellow"),
+        NULL
+    };
+    create_dropdown(section, NULL, _("settings_ui_line_color"), line_color_opts);
+
+    lv_obj_t * sub_calib_page = lv_menu_page_create(menu, NULL);
+    lv_obj_set_style_pad_hor(sub_calib_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
+    lv_menu_separator_create(sub_calib_page);
+    section = lv_menu_section_create(sub_calib_page);
+    const char *calib_mode_opts[] = {
+        _("settings_calib_mode_factory"),
+        _("settings_calib_mode_user"),
+        NULL
+    };
+    create_dropdown(section, NULL, _("settings_calib_mode"), calib_mode_opts);
 
     /* 关于 */
     lv_obj_t * sub_about_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_about_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_about_page);
     section = lv_menu_section_create(sub_about_page);
-    // cont = create_text(section, NULL, _("settings_sw_ver"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     cont = create_text_with_detail(section, _("settings_sn_code"), "0x12345678");
     cont = create_text_with_detail(section, _("settings_sw_ver"), "0.0.1");
     cont = create_text_with_detail(section, _("settings_hw_ver"), "0.0.1");
     char boot_count[16];
     sprintf(boot_count, "%d", settings_get_boot_count());
     cont = create_text_with_detail(section, _("settings_boot_count"), boot_count);
-    // lv_menu_set_load_page_event(menu, cont, sub_software_info_page);
-    // cont = create_text(section, NULL, "Legal information", LV_MENU_ITEM_BUILDER_VARIANT_1);
-    // lv_menu_set_load_page_event(menu, cont, sub_legal_info_page);
 
     /* 系统设置 */
     lv_obj_t * sub_menu_mode_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_menu_mode_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_menu_mode_page);
     section = lv_menu_section_create(sub_menu_mode_page);
+
+    /* 系统设置 - 量程切换 */
     const char *range_opts[] = {_("settings_range_sw_algo_sel_0"), _("settings_range_sw_algo_sel_1"), NULL};
     cont = create_dropdown(section, NULL, _("settings_range_sw_algo_sel"), range_opts);
-    const char *lang_opts[] = {"简体中文", "English", NULL};
+
+    /* 系统设置 - 语言 */
+    const char *lang_opts[] = {
+        _("settings_lang_simplified_chinese"),
+        _("settings_lang_english"),
+        NULL
+    };
     cont = create_dropdown(section, NULL, _("settings_language"), lang_opts);
+    lv_obj_add_event_cb(cont, dd_settings_lang_handler, LV_EVENT_ALL, NULL);
+
+    /* 系统设置 - 设备地址配置 */
     cont = create_text(section, NULL, _("settings_device_addr"), LV_MENU_ITEM_BUILDER_VARIANT_1);
+
+    /* 系统设置 - 系统还原 */
     cont = create_btn(section, LV_SYMBOL_WARNING, _("settings_factory_reset"));
 
     /*Create a root page*/
@@ -264,9 +323,9 @@ void page_settings_finalize(void)
     cont = create_text(section, NULL, _("settings_automatic_protection"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_mechanics_page);
     cont = create_text(section, NULL, _("settings_ui"), LV_MENU_ITEM_BUILDER_VARIANT_1);
-    lv_menu_set_load_page_event(menu, cont, sub_sound_page);
+    lv_menu_set_load_page_event(menu, cont, sub_ui_page);
     cont = create_text(section, NULL, _("settings_calibration"), LV_MENU_ITEM_BUILDER_VARIANT_1);
-    lv_menu_set_load_page_event(menu, cont, sub_display_page);
+    lv_menu_set_load_page_event(menu, cont, sub_calib_page);
 
     section = lv_menu_section_create(root_page);
     cont = create_text(section, NULL, _("settings_about"), LV_MENU_ITEM_BUILDER_VARIANT_1);

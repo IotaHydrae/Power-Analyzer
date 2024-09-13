@@ -2,6 +2,8 @@
 #include <string.h>
 #include "pico/stdlib.h"
 
+#include "lv_i18n/lv_i18n.h"
+
 #include "version.h"
 #include "flash.h"
 #include "settings.h"
@@ -129,6 +131,26 @@ void restore_defaults_settings(void)
 uint settings_get_boot_count(void)
 {
     return current_settings->boot_count;
+}
+
+void settings_set_language(unsigned lang)
+{
+    switch (lang) {
+    case SETTINGS_LANG_ZH_CN:
+        lv_i18n_set_locale("zh-CN");
+        break;
+    case SETTINGS_LANG_EN_US:
+        lv_i18n_set_locale("en-US");
+        break;
+    default:
+        lv_i18n_set_locale("zh-CN");
+        break;
+    }
+}
+
+uint settings_get_language(void)
+{
+    return 0;
 }
 
 static void increase_boot_count(void)

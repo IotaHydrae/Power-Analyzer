@@ -23,7 +23,22 @@ static lv_i18n_phrase_t zh_cn_singulars[] = {
     {"settings_automatic_voltage_cut", "自动断开电压"},
     {"settings_automatic_current_cut", "自动断开电流"},
     {"settings_ui", "界面设置"},
+    {"settings_ui_refr_rate", "刷新频率"},
+    {"settings_ui_disp_mode", "显示模式"},
+    {"settings_ui_disp_mode_0", "指针+数字"},
+    {"settings_ui_disp_mode_1", "数字+折线"},
+    {"settings_ui_disp_mode_2", "折线+指针"},
+    {"settings_ui_disp_mode_3", "单折线"},
+    {"settings_ui_line_color", "折线颜色"},
+    {"settings_ui_line_color_black", "黑色"},
+    {"settings_ui_line_color_red", "红色"},
+    {"settings_ui_line_color_green", "绿色"},
+    {"settings_ui_line_color_blue", "蓝色"},
+    {"settings_ui_line_color_yellow", "黄色"},
     {"settings_calibration", "校准"},
+    {"settings_calib_mode", "校准模式"},
+    {"settings_calib_mode_factory", "厂家校准"},
+    {"settings_calib_mode_user", "用户校准"},
     {"settings_about", "关于"},
     {"settings_sn_code", "SN 码"},
     {"settings_sw_ver", "软件版本号"},
@@ -36,6 +51,8 @@ static lv_i18n_phrase_t zh_cn_singulars[] = {
     {"settings_device_addr", "设备通讯地址"},
     {"settings_factory_reset", "系统还原"},
     {"settings_language", "语言设置"},
+    {"settings_lang_simplified_chinese", "简体中文"},
+    {"settings_lang_english", "English"},
     {NULL, NULL} // End mark
 };
 
@@ -56,14 +73,48 @@ static const lv_i18n_lang_t zh_cn_lang = {
     .locale_plural_fn = zh_cn_plural_fn
 };
 
-static lv_i18n_phrase_t en_gb_singulars[] = {
-    {"title1", "Main menu"},
+static lv_i18n_phrase_t en_us_singulars[] = {
+    {"title1", "Display basic information here"},
+    {"settings_automatic_protection", "Automatic protection settings"},
+    {"settings_automatic_voltage_cut", "Automatic voltage cut"},
+    {"settings_automatic_current_cut", "Automatic current cut"},
+    {"settings_ui", "UI settings"},
+    {"settings_ui_refr_rate", "Refresh rate"},
+    {"settings_ui_disp_mode", "Display mode"},
+    {"settings_ui_disp_mode_0", "Meter+Numer"},
+    {"settings_ui_disp_mode_1", "Number+Line"},
+    {"settings_ui_disp_mode_2", "Line+Meter"},
+    {"settings_ui_disp_mode_3", "Line"},
+    {"settings_ui_line_color", "Line color"},
+    {"settings_ui_line_color_black", "Black"},
+    {"settings_ui_line_color_red", "Read"},
+    {"settings_ui_line_color_green", "Green"},
+    {"settings_ui_line_color_blue", "Blue"},
+    {"settings_ui_line_color_yellow", "Yellow"},
+    {"settings_calibration", "Calibration"},
+    {"settings_calib_mode", "Calibration mode"},
+    {"settings_calib_mode_factory", "Factory calibration"},
+    {"settings_calib_mode_user", "User calibration"},
+    {"settings_about", "About"},
+    {"settings_sn_code", "SN code"},
+    {"settings_sw_ver", "Software version"},
+    {"settings_hw_ver", "Hardware version"},
+    {"settings_boot_count", "Boot count"},
+    {"settings_system", "System settings"},
+    {"settings_range_sw_algo_sel", "Range switch algorithm selection"},
+    {"settings_range_sw_algo_sel_0", "Realtime switch"},
+    {"settings_range_sw_algo_sel_1", "Smooth switch"},
+    {"settings_device_addr", "Device communication address"},
+    {"settings_factory_reset", "System recovery"},
+    {"settings_language", "Language setting"},
+    {"settings_lang_simplified_chinese", "简体中文"},
+    {"settings_lang_english", "English"},
     {NULL, NULL} // End mark
 };
 
 
 
-static uint8_t en_gb_plural_fn(int32_t num)
+static uint8_t en_us_plural_fn(int32_t num)
 {
     uint32_t n = op_n(num); UNUSED(n);
     uint32_t i = op_i(n); UNUSED(i);
@@ -73,16 +124,16 @@ static uint8_t en_gb_plural_fn(int32_t num)
     return LV_I18N_PLURAL_TYPE_OTHER;
 }
 
-static const lv_i18n_lang_t en_gb_lang = {
-    .locale_name = "en-GB",
-    .singulars = en_gb_singulars,
+static const lv_i18n_lang_t en_us_lang = {
+    .locale_name = "en-US",
+    .singulars = en_us_singulars,
 
-    .locale_plural_fn = en_gb_plural_fn
+    .locale_plural_fn = en_us_plural_fn
 };
 
 const lv_i18n_language_pack_t lv_i18n_language_pack[] = {
     &zh_cn_lang,
-    &en_gb_lang,
+    &en_us_lang,
     NULL // End mark
 };
 

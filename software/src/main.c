@@ -192,6 +192,7 @@ void main_task(__unused void *params) {
 
     lv_i18n_init(lv_i18n_language_pack);
     lv_i18n_set_locale("zh-CN");
+    // lv_i18n_set_locale("en-US");
 
 #if INDEV_DRV_USED
     lv_port_indev_init();

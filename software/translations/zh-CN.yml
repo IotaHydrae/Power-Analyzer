@@ -4,7 +4,22 @@
   settings_automatic_voltage_cut: 自动断开电压
   settings_automatic_current_cut: 自动断开电流
   settings_ui: 界面设置
+  settings_ui_refr_rate: 刷新频率
+  settings_ui_disp_mode: 显示模式
+  settings_ui_disp_mode_0: 指针+数字
+  settings_ui_disp_mode_1: 数字+折线
+  settings_ui_disp_mode_2: 折线+指针
+  settings_ui_disp_mode_3: 单折线
+  settings_ui_line_color: 折线颜色
+  settings_ui_line_color_black: 黑色
+  settings_ui_line_color_red: 红色
+  settings_ui_line_color_green: 绿色
+  settings_ui_line_color_blue: 蓝色
+  settings_ui_line_color_yellow: 黄色
   settings_calibration: 校准
+  settings_calib_mode: 校准模式
+  settings_calib_mode_factory: 厂家校准
+  settings_calib_mode_user: 用户校准
   settings_about: 关于
   settings_sn_code: SN 码
   settings_sw_ver: 软件版本号
@@ -17,3 +32,5 @@
   settings_device_addr: 设备通讯地址
   settings_factory_reset: 系统还原
   settings_language: 语言设置
+  settings_lang_simplified_chinese: 简体中文
+  settings_lang_english: English
