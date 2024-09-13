@@ -284,7 +284,12 @@ void page_settings_finalize(void)
     lv_obj_set_style_pad_hor(sub_about_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_about_page);
     section = lv_menu_section_create(sub_about_page);
-    cont = create_text_with_detail(section, _("settings_sn_code"), "0x12345678");
+
+    uint8_t sn_code[8];
+    settings_get_sn(sn_code);
+    char sn_str[16];
+    sprintf(sn_str, "0x%02X%02X%02X%02X%02X%02X", sn_code[0], sn_code[1], sn_code[2], sn_code[3], sn_code[4], sn_code[5], sn_code[6], sn_code[7]);
+    cont = create_text_with_detail(section, _("settings_sn_code"), sn_str);
     cont = create_text_with_detail(section, _("settings_sw_ver"), "0.0.1");
     cont = create_text_with_detail(section, _("settings_hw_ver"), "0.0.1");
     char boot_count[16];
@@ -327,10 +332,10 @@ void page_settings_finalize(void)
     cont = create_text(section, NULL, _("settings_calibration"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_calib_page);
 
-    section = lv_menu_section_create(root_page);
+    // section = lv_menu_section_create(root_page);/
     cont = create_text(section, NULL, _("settings_about"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_about_page);
-    cont = create_text(section, LV_SYMBOL_SETTINGS, _("settings_system"), LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_text(section, NULL, _("settings_system"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_menu_mode_page);
 
     lv_menu_set_sidebar_page(menu, root_page);

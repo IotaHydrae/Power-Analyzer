@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "pico/stdlib.h"
+#include "pico/unique_id.h"
 
 #include "lv_i18n/lv_i18n.h"
 
@@ -153,6 +154,25 @@ uint settings_get_language(void)
     return 0;
 }
 
+void settings_set_sn(uint8_t sn[])
+{
+    switch (current_settings->partition) {
+    case SETTINGS_1:
+        memcpy(&runtime_settings.sn, sn, 8);
+        break;
+    case SETTINGS_2:
+        memcpy(&runtime_settings_2.sn, sn, 8);
+        break;
+    default:
+        break;
+    }
+}
+
+void settings_get_sn(uint8_t *sn_out)
+{
+    memcpy(sn_out, current_settings->sn, 8);
+}
+
 static void increase_boot_count(void)
 {
     switch (current_settings->partition) {
@@ -205,14 +225,19 @@ void settings_init(void)
         printf("This is the first boot, do the initialization\n");
         restore_defaults_settings();
     }
-    dump_curr_settings();
-    load_settings();
 
     if (current_settings->magic != MAGIC_HEADER) {
         /* The settings are corrupted, restore defaults */
         printf("Settings corrupted, restoring defaults\n");
         restore_defaults_settings();
     }
+
+    dump_curr_settings();
+    load_settings();
+
+    pico_unique_board_id_t ubid;
+    pico_get_unique_board_id(&ubid);
+    settings_set_sn(ubid.id);
 
     increase_boot_count();
     save_settings();
