@@ -200,6 +200,27 @@ static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
 
     /* save this setting to flash */
 }
+#include "hardware/watchdog.h"
+void software_reset()
+{
+    *((volatile uint32_t*)(PPB_BASE + 0x0ED0C)) = 0x5FA0004;
+}
+
+static void event_cb(lv_event_t * e)
+{
+    lv_obj_t * obj = lv_event_get_current_target(e);
+    LV_LOG_USER("Button %s clicked", lv_msgbox_get_active_btn_text(obj));
+
+    if (0 == strcmp("Yes", lv_msgbox_get_active_btn_text(obj))) {
+        lv_msgbox_close(obj);
+        LV_LOG_INFO("restarting device...\n");
+        /*  TODO: restart the device */
+        watchdog_reboot(0, SRAM_END, 10);
+    } else {
+        LV_LOG_INFO("do nothing...\n");
+        lv_msgbox_close(obj);
+    }
+}
 
 /* dropdown settings language handler */
 static void dd_settings_lang_handler(lv_event_t *e)
@@ -212,14 +233,18 @@ static void dd_settings_lang_handler(lv_event_t *e)
         LV_LOG_USER("Option: %s", buf);
 
         if (strcmp(buf, _("settings_lang_simplified_chinese")) == 0) {
+            LV_LOG_USER("language set to chinese");
             settings_set_language(SETTINGS_LANG_ZH_CN);
         } else if (strcmp(buf, _("settings_lang_english")) == 0) {
+            LV_LOG_USER("language set to English");
             settings_set_language(SETTINGS_LANG_EN_US);
         } else {
             settings_set_language(SETTINGS_LANG_ZH_CN);
         }
-
-        /* TODO: pop up a dialog to ask if user want to restart the device */
+        static const char * btns[] = {"Yes", "No", ""};
+        lv_obj_t * dialog = lv_msgbox_create(NULL, "Note", "A system restart is required to make language setting valid.", btns, true);
+        lv_obj_add_event_cb(dialog, event_cb, LV_EVENT_VALUE_CHANGED, NULL);
+        lv_obj_center(dialog);
     }
 }
 
@@ -271,6 +296,7 @@ void page_settings_finalize(void)
     };
     create_dropdown(section, NULL, _("settings_ui_line_color"), line_color_opts);
 
+    /* 校准菜单 */
     lv_obj_t * sub_calib_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_calib_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_calib_page);
@@ -282,7 +308,7 @@ void page_settings_finalize(void)
     };
     create_dropdown(section, NULL, _("settings_calib_mode"), calib_mode_opts);
 
-    /* 关于 */
+    /* 关于菜单 */
     lv_obj_t * sub_about_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_about_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_about_page);
@@ -313,10 +339,10 @@ void page_settings_finalize(void)
     const char *lang_opts[] = {
         _("settings_lang_simplified_chinese"),
         _("settings_lang_english"),
-        NULL
     };
     cont = create_dropdown(section, NULL, _("settings_language"), lang_opts);
     lv_obj_add_event_cb(cont, dd_settings_lang_handler, LV_EVENT_ALL, NULL);
+    lv_dropdown_set_selected(cont, settings_get_language());
 
     /* 系统设置 - 设备地址配置 */
     cont = create_text_with_detail(section, _("settings_device_addr"), "0x12345678");

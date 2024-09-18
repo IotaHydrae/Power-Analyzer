@@ -46,6 +46,7 @@
 #include "semphr.h"
 
 #include "backlight.h"
+#include "settings.h"
 
 #include "debug.h"
 #include "ui/ui.h"
@@ -194,9 +195,7 @@ void main_task(__unused void *params) {
     lv_port_indev_init();
 #endif
 
-    lv_i18n_init(lv_i18n_language_pack);
-    lv_i18n_set_locale("zh-CN");
-    // lv_i18n_set_locale("en-US");
+    settings_init();
 
     printf("Starting App...\n");
 

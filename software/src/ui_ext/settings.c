@@ -38,6 +38,8 @@ struct settings {
     u32 calibrate_mode;
 
     u32 bl_lvl;
+
+    u32 language;
     // u32 crc32;
 };
 
@@ -118,12 +120,15 @@ void restore_defaults_settings(void)
     switch (current_settings->partition) {
     case SETTINGS_1:
         memcpy(&runtime_settings, &default_settings, sizeof(struct settings));
+        runtime_settings.partition = SETTINGS_1;
         break;
     case SETTINGS_2:
         memcpy(&runtime_settings_2, &default_settings, sizeof(struct settings));
+        runtime_settings_2.partition = SETTINGS_2;
         break;
     default:
         memcpy(&runtime_settings, &default_settings, sizeof(struct settings));
+        runtime_settings.partition = SETTINGS_1;
         break;
     }
     save_settings();
@@ -137,21 +142,44 @@ uint settings_get_boot_count(void)
 void settings_set_language(unsigned lang)
 {
     switch (lang) {
-    case SETTINGS_LANG_ZH_CN:
-        lv_i18n_set_locale("zh-CN");
+        case SETTINGS_LANG_ZH_CN:
+            lv_i18n_set_locale("zh-CN");
+            break;
+        case SETTINGS_LANG_EN_US:
+            lv_i18n_set_locale("en-US");
+            break;
+        default:
+            // lv_i18n_set_locale("zh-CN");
+            printf("Unknown language");
+            return;
+    }
+
+    switch (current_settings->partition) {
+    case SETTINGS_1:
+        runtime_settings.language = lang;
         break;
-    case SETTINGS_LANG_EN_US:
-        lv_i18n_set_locale("en-US");
+    case SETTINGS_2:
+        runtime_settings_2.language = lang;
         break;
     default:
-        lv_i18n_set_locale("zh-CN");
         break;
     }
+
+    save_settings();
 }
 
 uint settings_get_language(void)
 {
-    return 0;
+    switch (current_settings->language) {
+    case SETTINGS_LANG_ZH_CN:
+        return SETTINGS_LANG_ZH_CN;
+    case SETTINGS_LANG_EN_US:
+        return SETTINGS_LANG_EN_US;
+    default:
+        return SETTINGS_LANG_ZH_CN;
+    }
+
+    return -1;
 }
 
 void settings_set_sn(uint8_t sn[])
@@ -200,6 +228,7 @@ static void dump_settings(const struct settings *s)
     printf("\thw_version: 0x%08x\n", s->hw_version);
     printf("\tboot_count: %d\n", s->boot_count);
     printf("\tpartition: %d\n", s->partition);
+    printf("\tlanguage: %d\n", s->language);
 }
 
 static void dump_def_settings(void)
@@ -231,13 +260,29 @@ void settings_init(void)
         printf("Settings corrupted, restoring defaults\n");
         restore_defaults_settings();
     }
-
     dump_curr_settings();
+
     load_settings();
 
     pico_unique_board_id_t ubid;
     pico_get_unique_board_id(&ubid);
     settings_set_sn(ubid.id);
+
+    lv_i18n_init(lv_i18n_language_pack);
+    // lv_i18n_set_locale("zh-CN");
+    // lv_i18n_set_locale("en-US");
+    switch (settings_get_language()) {
+    case SETTINGS_LANG_ZH_CN:
+        lv_i18n_set_locale("zh-CN");
+        break;
+    case SETTINGS_LANG_EN_US:
+        lv_i18n_set_locale("en-US");
+        break;
+    default:
+        lv_i18n_set_locale("zh-CN");
+        break;
+    }
+    printf("current locale : %s\n", lv_i18n_get_current_locale());
 
     increase_boot_count();
     save_settings();

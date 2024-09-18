@@ -10,6 +10,7 @@ enum {
 
 void settings_init(void);
 void settings_set_language(unsigned lang);
+uint settings_get_language(void);
 void settings_get_sn(uint8_t *sn_out);
 unsigned int settings_get_boot_count(void);
 
