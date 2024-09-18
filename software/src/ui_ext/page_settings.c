@@ -173,7 +173,7 @@ static lv_obj_t * create_dropdown(lv_obj_t *parent, const char *icon,  const cha
     lv_obj_add_style(ddlist, &style_dd, LV_PART_MAIN | LV_STATE_DEFAULT);
     encoder_group_add_obj(ddlist);
 
-    lv_dropdown_set_options(ddlist, "");
+    lv_dropdown_clear_options(ddlist);
     const char **ptr = opts;
     while (*ptr != NULL)  {
         lv_dropdown_add_option(ddlist, *ptr, LV_DROPDOWN_POS_LAST);
@@ -339,6 +339,7 @@ void page_settings_finalize(void)
     const char *lang_opts[] = {
         _("settings_lang_simplified_chinese"),
         _("settings_lang_english"),
+        NULL,
     };
     cont = create_dropdown(section, NULL, _("settings_language"), lang_opts);
     lv_obj_add_event_cb(cont, dd_settings_lang_handler, LV_EVENT_ALL, NULL);
