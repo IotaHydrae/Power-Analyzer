@@ -252,8 +252,19 @@ static void dd_settings_lang_handler(lv_event_t *e)
     }
 }
 
+void test_event_cb(lv_event_t *e)
+{
+    LV_LOG_WARN("%d\n", lv_event_get_code(e));
+}
+
 void page_settings_finalize(void)
 {
+    encoder_group_add_obj(objects.settings_btn_statistics);
+    encoder_group_add_obj(objects.settings_btn_pd);
+    encoder_group_add_obj(objects.settings_btn_home);
+    encoder_group_add_obj(objects.settings_btn_meter);
+    encoder_group_add_obj(objects.settings_btn_settings);
+
     lv_obj_t *menu = objects.settings_menu_settings;
     lv_menu_set_mode_root_back_btn(menu, LV_MENU_ROOT_BACK_BTN_DISABLED);
 
@@ -360,8 +371,10 @@ void page_settings_finalize(void)
     lv_obj_set_style_pad_hor(root_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     section = lv_menu_section_create(root_page);
 
+    // cont = create_text(section, NULL, _("settings_automatic_protection"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     cont = create_text(section, NULL, _("settings_automatic_protection"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_mechanics_page);
+    lv_obj_add_event_cb(cont, test_event_cb, LV_EVENT_ALL, NULL);
     encoder_group_add_obj(cont);
 
     cont = create_text(section, NULL, _("settings_ui"), LV_MENU_ITEM_BUILDER_VARIANT_1);

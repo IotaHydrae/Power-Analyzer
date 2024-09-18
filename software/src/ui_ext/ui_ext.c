@@ -7,6 +7,8 @@
 #include "ui_ext.h"
 #include "settings.h"
 
+#include "porting/lv_port_indev_template.h"
+
 void ui_finalize(void)
 {
     printf("boot count : %d\n", settings_get_boot_count());

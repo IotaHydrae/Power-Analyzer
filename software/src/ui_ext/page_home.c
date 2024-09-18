@@ -5,6 +5,8 @@
 #include "ui/screens.h"
 
 #include "ui_ext.h"
+#include "settings.h"
+#include "porting/lv_port_indev_template.h"
 
 #define SAMPLE_DATA_SIZE 50
 
@@ -25,6 +27,12 @@ static void add_data(lv_timer_t *t)
 
 void page_home_finalize(void)
 {
+    encoder_group_add_obj(objects.home_btn_statistics);
+    encoder_group_add_obj(objects.home_btn_pd);
+    encoder_group_add_obj(objects.home_btn_home);
+    encoder_group_add_obj(objects.home_btn_meter);
+    encoder_group_add_obj(objects.home_btn_settings);
+
     lv_obj_t *chart = objects.home_chart_current;
     lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, -1000, 1000);
     lv_obj_set_style_size(chart, 0, LV_PART_INDICATOR);
@@ -35,6 +43,7 @@ void page_home_finalize(void)
     lv_chart_set_ext_y_array(chart, ser, (lv_coord_t *)ecg_sample);
 
     chart_current_timer = lv_timer_create(add_data, 100, chart);
+    lv_timer_pause(chart_current_timer);
 }
 
 void action_chart_current_pause(lv_event_t * e)

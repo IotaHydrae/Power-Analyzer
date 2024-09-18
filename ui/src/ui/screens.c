@@ -165,7 +165,7 @@ static void event_handler_cb_settings_settings_btn_meter(lv_event_t *e) {
 static void event_handler_cb_settings_settings_btn_settings(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
-    if (event == LV_EVENT_DRAW_PART_END) {
+    if (event == LV_EVENT_DRAW_POST_END) {
         e->user_data = (void *)0;
         flowPropagateValueLVGLEvent(flowState, 11, 0, e);
     }
