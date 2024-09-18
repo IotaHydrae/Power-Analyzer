@@ -112,7 +112,11 @@ set(INDEV_DRV_USE_GT911   0)
 SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -Wl,--print-memory-usage")
 SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -Wl,--print-memory-usage")
 
-include_directories(. ../include)
+include_directories(
+    .
+    ../include
+    ../include/RP2040-Encoder
+)
 
 # add lvgl library here
 add_subdirectory(lvgl)
@@ -153,6 +157,7 @@ file(GLOB_RECURSE COMMON_SOURCES
     i2c_tools.c
     backlight.c
     flash.c
+    encoder.cc
 )
 
 file(GLOB_RECURSE UI_SOURCES

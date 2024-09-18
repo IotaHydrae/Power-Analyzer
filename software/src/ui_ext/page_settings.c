@@ -7,6 +7,7 @@
 
 #include "ui_ext.h"
 #include "settings.h"
+#include "porting/lv_port_indev_template.h"
 
 LV_FONT_DECLARE(ui_font_ns14);
 
@@ -89,6 +90,7 @@ static lv_obj_t * create_btn(lv_obj_t * parent, const char * icon, const char * 
 {
     lv_obj_t *cont = lv_menu_cont_create(parent);
     lv_obj_t *obj = lv_btn_create(cont);
+    encoder_group_add_obj(obj);
 
     lv_obj_t * img = NULL;
     lv_obj_t * label = NULL;
@@ -154,6 +156,7 @@ static lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char
 
     lv_obj_t * sw = lv_switch_create(obj);
     lv_obj_add_state(sw, chk ? LV_STATE_CHECKED : 0);
+    encoder_group_add_obj(sw);
 
     return obj;
 }
@@ -168,6 +171,7 @@ static lv_obj_t * create_dropdown(lv_obj_t *parent, const char *icon,  const cha
 
     lv_obj_t * ddlist = lv_dropdown_create(obj);
     lv_obj_add_style(ddlist, &style_dd, LV_PART_MAIN | LV_STATE_DEFAULT);
+    encoder_group_add_obj(ddlist);
 
     lv_dropdown_set_options(ddlist, "");
     const char **ptr = opts;
@@ -195,7 +199,6 @@ static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
     }
 
     /* save this setting to flash */
-    
 }
 
 /* dropdown settings language handler */
@@ -316,7 +319,7 @@ void page_settings_finalize(void)
     lv_obj_add_event_cb(cont, dd_settings_lang_handler, LV_EVENT_ALL, NULL);
 
     /* 系统设置 - 设备地址配置 */
-    cont = create_text(section, NULL, _("settings_device_addr"), LV_MENU_ITEM_BUILDER_VARIANT_1);
+    cont = create_text_with_detail(section, _("settings_device_addr"), "0x12345678");
 
     /* 系统设置 - 系统还原 */
     cont = create_btn(section, LV_SYMBOL_WARNING, _("settings_factory_reset"));
@@ -325,18 +328,27 @@ void page_settings_finalize(void)
     root_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(root_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     section = lv_menu_section_create(root_page);
+
     cont = create_text(section, NULL, _("settings_automatic_protection"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_mechanics_page);
+    encoder_group_add_obj(cont);
+
     cont = create_text(section, NULL, _("settings_ui"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_ui_page);
+    encoder_group_add_obj(cont);
+
     cont = create_text(section, NULL, _("settings_calibration"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_calib_page);
+    encoder_group_add_obj(cont);
 
     // section = lv_menu_section_create(root_page);/
     cont = create_text(section, NULL, _("settings_about"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_about_page);
+    encoder_group_add_obj(cont);
+
     cont = create_text(section, NULL, _("settings_system"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_menu_mode_page);
+    encoder_group_add_obj(cont);
 
     lv_menu_set_sidebar_page(menu, root_page);
 

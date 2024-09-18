@@ -31,6 +31,7 @@ extern "C" {
  * GLOBAL PROTOTYPES
  **********************/
 void lv_port_indev_init(void);
+void encoder_group_add_obj(lv_obj_t *obj);
 
 /**********************
  *      MACROS

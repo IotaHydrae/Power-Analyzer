@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[power-analyzer.eez-project]:/userPages/3",
+    "selectedUserPageObject": "[power-analyzer.eez-project]:/userPages/0",
     "selectedUserWidgetObject": "[power-analyzer.eez-project]:/userWidgets/0",
     "selectedFontObject": "[power-analyzer.eez-project]:/fonts/2",
     "subnavigationSelectedItems": {
@@ -184,6 +184,7 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 60,
+              "selected": 2,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
@@ -213,10 +214,10 @@
                 {
                   "type": "tab",
                   "id": "#c36a4350-2564-4d87-afa5-849d4bd7a46d",
-                  "name": "USB",
+                  "name": "Home",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[power-analyzer.eez-project]:/userPages/3",
+                    "objectPath": "[power-analyzer.eez-project]:/userPages/0",
                     "permanent": false
                   },
                   "icon": {
@@ -980,8 +981,13 @@
     "[power-analyzer.eez-project]:/userPages/0[flow-state]": {
       "selection": {
         "0": {
-          "0": {},
-          "1": {}
+          "0": {
+            "0": {
+              "$selected": true
+            }
+          },
+          "1": {},
+          "2": {}
         }
       },
       "transform": {
@@ -1077,9 +1083,7 @@
       "selection": {
         "0": {
           "3": {
-            "0": {
-              "$selected": true
-            }
+            "0": {}
           }
         }
       },

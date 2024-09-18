@@ -5,3 +5,7 @@
 	path = software/src/lvgl
 	url = https://github.com/lvgl/lvgl.git
 	branch = release/v8.4
+[submodule "software/include/RP2040-Encoder"]
+	path = software/include/RP2040-Encoder
+	url = https://github.com/tobiglaser/RP2040-Encoder.git
+	branch = main

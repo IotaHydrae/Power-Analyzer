@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include "indev.h"
 
+#include "encoder.h"
+
 /*********************
  *      DEFINES
  *********************/
@@ -61,7 +63,7 @@ lv_indev_t * indev_button;
 
 static int32_t encoder_diff;
 static lv_indev_state_t encoder_state;
-
+static lv_group_t *encoder_group;
 /**********************
  *      MACROS
  **********************/
@@ -84,7 +86,7 @@ void lv_port_indev_init(void)
      *  You should shape them according to your hardware
      */
 
-    static lv_indev_drv_t indev_drv;
+    static lv_indev_drv_t touchpad_indev_drv;
 
     /*------------------
      * Touchpad
@@ -94,10 +96,10 @@ void lv_port_indev_init(void)
     touchpad_init();
 
     /*Register a touchpad input device*/
-    lv_indev_drv_init(&indev_drv);
-    indev_drv.type = LV_INDEV_TYPE_POINTER;
-    indev_drv.read_cb = touchpad_read;
-    indev_touchpad = lv_indev_drv_register(&indev_drv);
+    lv_indev_drv_init(&touchpad_indev_drv);
+    touchpad_indev_drv.type = LV_INDEV_TYPE_POINTER;
+    touchpad_indev_drv.read_cb = touchpad_read;
+    indev_touchpad = lv_indev_drv_register(&touchpad_indev_drv);
 
     /*------------------
      * Mouse
@@ -138,33 +140,34 @@ void lv_port_indev_init(void)
     /*------------------
      * Encoder
      * -----------------*/
-
+    static lv_indev_drv_t encoder_indev_drv;
     /*Initialize your encoder if you have*/
-    // encoder_init();
+    encoder_init();
 
     /*Register a encoder input device*/
-    // lv_indev_drv_init(&indev_drv);
-    // indev_drv.type = LV_INDEV_TYPE_ENCODER;
-    // indev_drv.read_cb = encoder_read;
-    // indev_encoder = lv_indev_drv_register(&indev_drv);
+    lv_indev_drv_init(&encoder_indev_drv);
+    encoder_indev_drv.type = LV_INDEV_TYPE_ENCODER;
+    encoder_indev_drv.read_cb = encoder_read;
+    indev_encoder = lv_indev_drv_register(&encoder_indev_drv);
 
     /*Later you should create group(s) with `lv_group_t * group = lv_group_create()`,
      *add objects to the group with `lv_group_add_obj(group, obj)`
      *and assign this input device to group to navigate in it:
      *`lv_indev_set_group(indev_encoder, group);`*/
-
+    encoder_group = lv_group_create();
+    lv_indev_set_group(indev_encoder, encoder_group);
     /*------------------
      * Button
      * -----------------*/
-
+    // static lv_indev_drv_t btn_indev_drv;
     /*Initialize your button if you have*/
     // button_init();
 
     /*Register a button input device*/
-    // lv_indev_drv_init(&indev_drv);
-    // indev_drv.type = LV_INDEV_TYPE_BUTTON;
-    // indev_drv.read_cb = button_read;
-    // indev_button = lv_indev_drv_register(&indev_drv);
+    // lv_indev_drv_init(&btn_indev_drv);
+    // btn_indev_drv.type = LV_INDEV_TYPE_BUTTON;
+    // btn_indev_drv.read_cb = button_read;
+    // indev_button = lv_indev_drv_register(&btn_indev_drv);
 
     /*Assign buttons to points on the screen*/
     // static const lv_point_t btn_points[2] = {
@@ -328,29 +331,41 @@ static uint32_t keypad_get_key(void)
 /*------------------
  * Encoder
  * -----------------*/
+void encoder_group_add_obj(lv_obj_t *obj)
+{
+    lv_group_add_obj(encoder_group, obj);
+}
 
 /*Initialize your keypad*/
 static void encoder_init(void)
 {
     /*Your code comes here*/
+    encoder_hw_init();
 }
 
 /*Will be called by the library to read the encoder*/
 static void encoder_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
 {
+    static int count_prev = 0;
 
-    data->enc_diff = encoder_diff;
-    data->state = encoder_state;
+    encoder_diff = encoder_get_count();
+    if (count_prev != encoder_diff) {
+        data->enc_diff += encoder_diff - count_prev;
+        count_prev = encoder_get_count();
+    } else {
+        data->enc_diff = 0;
+    }
+
+    data->state = encoder_sw_is_pressed() ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
 }
 
 /*Call this function in an interrupt to process encoder events (turn, press)*/
-static void encoder_handler(void)
-{
-    /*Your code comes here*/
-
-    encoder_diff += 0;
-    encoder_state = LV_INDEV_STATE_REL;
-}
+// static void encoder_handler(void)
+// {
+//     /*Your code comes here*/
+//     encoder_diff = encoder_get_count();
+//     encoder_state = encoder_sw_is_pressed() ? LV_INDEV_STATE_PR : LV_INDEV_STATE_REL;
+// }
 
 /*------------------
  * Button
