@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include "hardware/watchdog.h"
+
 #include "lvgl.h"
 #include "lv_i18n/lv_i18n.h"
 #include "ui/ui.h"
@@ -188,19 +190,6 @@ static lv_obj_t * create_dropdown(lv_obj_t *parent, const char *icon,  const cha
     return ddlist;
 }
 
-static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    // lv_obj_t * menu = lv_event_get_user_data(e);
-    lv_obj_t * obj = lv_event_get_target(e);
-
-    if(code == LV_EVENT_VALUE_CHANGED) {
-        lv_log("%s, chk : %s\n", __func__, lv_obj_has_state(obj, LV_STATE_CHECKED)? "true" : "false");
-    }
-
-    /* save this setting to flash */
-}
-#include "hardware/watchdog.h"
 void software_reset()
 {
     *((volatile uint32_t*)(PPB_BASE + 0x0ED0C)) = 0x5FA0004;
@@ -219,6 +208,79 @@ static void event_cb(lv_event_t * e)
     } else {
         LV_LOG_INFO("do nothing...\n");
         lv_msgbox_close(obj);
+    }
+}
+
+void raise_reboot_dialog(void)
+{
+    static const char *btns[3];
+    btns[0] = _("yes");
+    btns[1] = _("no");
+    btns[2] = "";
+    lv_obj_t * dialog = lv_msgbox_create(NULL, _("note"), _("note_restart"), btns, true);
+    lv_obj_set_style_text_font(dialog, &ui_font_ns14, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_add_event_cb(dialog, event_cb, LV_EVENT_VALUE_CHANGED, NULL);
+    lv_obj_center(dialog);
+}
+
+static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    // lv_obj_t * menu = lv_event_get_user_data(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        lv_log("%s, chk : %s\n", __func__, lv_obj_has_state(obj, LV_STATE_CHECKED)? "true" : "false");
+    }
+
+    /* save this setting to flash */
+}
+
+static void dd_settings_ui_refr_rate_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        char buf[32];
+        lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
+        LV_LOG_USER("Option: %s", buf);
+
+        if (0 == strcmp("30Hz", buf)) {
+            LV_LOG_USER("fps set to 30Hz\n");
+            settings_set_refr_rate(SETTINGS_REFR_RATE_30FPS);
+        } else if (0 == strcmp("45Hz", buf)) {
+            LV_LOG_USER("fps set to 45Hz\n");
+            settings_set_refr_rate(SETTINGS_REFR_RATE_45FPS);
+        } else if (0 == strcmp("60Hz", buf)) {
+            LV_LOG_USER("fps set to 60Hz\n");
+            settings_set_refr_rate(SETTINGS_REFR_RATE_60FPS);
+        } else {
+            LV_LOG_ERROR("Given refr rate is Unsupported!\n");
+        }
+
+        // raise_reboot_dialog();
+    }
+}
+
+
+static void dd_settings_calib_mode_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        char buf[32];
+        lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
+        LV_LOG_USER("Option: %s", buf);
+
+        if(strcmp(_("settings_calib_mode_factory"), buf) == 0) {
+            settings_set_calib_mode(SETTINGS_CALIB_MODED_FACTORY);
+        } else if(strcmp(_("settings_calib_mode_user"), buf) == 0) {
+            settings_set_calib_mode(SETTINGS_CALIB_MODED_USER);
+        } else {
+            LV_LOG_ERROR("Given calib mode is Unsupported!\n");
+        }
+
+        // raise_reboot_dialog();
     }
 }
 
@@ -241,20 +303,9 @@ static void dd_settings_lang_handler(lv_event_t *e)
         } else {
             settings_set_language(SETTINGS_LANG_ZH_CN);
         }
-        static const char *btns[3];
-        btns[0] = _("yes");
-        btns[1] = _("no");
-        btns[2] = "";
-        lv_obj_t * dialog = lv_msgbox_create(NULL, _("note"), _("note_restart"), btns, true);
-        lv_obj_set_style_text_font(dialog, &ui_font_ns14, LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_add_event_cb(dialog, event_cb, LV_EVENT_VALUE_CHANGED, NULL);
-        lv_obj_center(dialog);
-    }
-}
 
-void test_event_cb(lv_event_t *e)
-{
-    LV_LOG_WARN("%d\n", lv_event_get_code(e));
+        raise_reboot_dialog();
+    }
 }
 
 void page_settings_finalize(void)
@@ -282,13 +333,16 @@ void page_settings_finalize(void)
 
     cont = create_switch(section, NULL, _("settings_automatic_current_cut"), false);
 
+    /* 界面设置菜单 */
     lv_obj_t * sub_ui_page = lv_menu_page_create(menu, NULL);
     lv_obj_set_style_pad_hor(sub_ui_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_ui_page);
     section = lv_menu_section_create(sub_ui_page);
     // create_switch(section, LV_SYMBOL_AUDIO, "Sound", false);
     const char *ref_rate_opts[] = { "30Hz", "45Hz", "60Hz", NULL};
-    create_dropdown(section, NULL, _("settings_ui_refr_rate"), ref_rate_opts);
+    cont = create_dropdown(section, NULL, _("settings_ui_refr_rate"), ref_rate_opts);
+    lv_obj_add_event_cb(cont, dd_settings_ui_refr_rate_handler, LV_EVENT_ALL, NULL);
+    lv_dropdown_set_selected(cont, settings_get_refr_rate());
 
     /* 创建显示模式下拉菜单 */
     const char *disp_mode_opts[] = {
@@ -321,7 +375,9 @@ void page_settings_finalize(void)
         _("settings_calib_mode_user"),
         NULL
     };
-    create_dropdown(section, NULL, _("settings_calib_mode"), calib_mode_opts);
+    cont = create_dropdown(section, NULL, _("settings_calib_mode"), calib_mode_opts);
+    lv_obj_add_event_cb(cont, dd_settings_calib_mode_handler, LV_EVENT_ALL, NULL);
+    lv_dropdown_set_selected(cont, settings_get_calib_mode());
 
     /* 关于菜单 */
     lv_obj_t * sub_about_page = lv_menu_page_create(menu, NULL);
@@ -371,10 +427,8 @@ void page_settings_finalize(void)
     lv_obj_set_style_pad_hor(root_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     section = lv_menu_section_create(root_page);
 
-    // cont = create_text(section, NULL, _("settings_automatic_protection"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     cont = create_text(section, NULL, _("settings_automatic_protection"), LV_MENU_ITEM_BUILDER_VARIANT_1);
     lv_menu_set_load_page_event(menu, cont, sub_mechanics_page);
-    lv_obj_add_event_cb(cont, test_event_cb, LV_EVENT_ALL, NULL);
     encoder_group_add_obj(cont);
 
     cont = create_text(section, NULL, _("settings_ui"), LV_MENU_ITEM_BUILDER_VARIANT_1);

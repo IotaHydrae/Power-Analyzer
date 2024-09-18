@@ -33,6 +33,7 @@ struct settings {
     u32 cut_curr;
 
     u32 ref_rate;
+    u32 chart_mode;
     u32 chart_line_color;
 
     u32 calibrate_mode;
@@ -67,6 +68,32 @@ static struct settings runtime_settings = {
 static struct settings runtime_settings_2 = {
     .partition = SETTINGS_2,
 };
+
+static void dump_settings(const struct settings *s)
+{
+    if (!s)
+        return;
+
+    printf("Settings:\n");
+    printf("\tmagic: 0x%08x\n", s->magic);
+    printf("\tsn: 0x%08x 0x%08x\n", s->sn[0], s->sn[1]);
+    printf("\tsw_version: 0x%08x\n", s->sw_version);
+    printf("\thw_version: 0x%08x\n", s->hw_version);
+    printf("\tboot_count: %d\n", s->boot_count);
+    printf("\tpartition: %d\n", s->partition);
+    printf("\trefr_rate: %d\n", s->ref_rate);
+    printf("\tlanguage: %d\n", s->language);
+}
+
+static void dump_def_settings(void)
+{
+    dump_settings(&default_settings);
+}
+
+static void dump_curr_settings(void)
+{
+    dump_settings(current_settings);
+}
 
 static void set_curr_settings(uint n)
 {
@@ -134,13 +161,71 @@ void restore_defaults_settings(void)
     save_settings();
 }
 
+static void increase_boot_count(void)
+{
+    switch (current_settings->partition) {
+    case SETTINGS_1:
+        runtime_settings.boot_count += 1;
+        break;
+    case SETTINGS_2:
+        runtime_settings_2.boot_count += 1;
+        break;
+    default:
+        runtime_settings.boot_count += 1;
+        break;
+    }
+}
+
 uint settings_get_boot_count(void)
 {
     return current_settings->boot_count;
 }
 
+void settings_set_refr_rate(unsigned rate)
+{
+    switch (current_settings->partition) {
+    case SETTINGS_1:
+        runtime_settings.ref_rate = rate;
+        break;
+    case SETTINGS_2:
+        runtime_settings_2.ref_rate = rate;
+        break;
+    default:
+        break;
+    }
+
+    save_settings();
+}
+
+uint settings_get_refr_rate()
+{
+    return current_settings->ref_rate;
+}
+
+void settings_set_calib_mode(unsigned mode)
+{
+    switch (current_settings->partition) {
+    case SETTINGS_1:
+        runtime_settings.calibrate_mode = mode;
+        break;
+    case SETTINGS_2:
+        runtime_settings_2.calibrate_mode = mode;
+        break;
+    default:
+        break;
+    }
+
+    save_settings();
+}
+
+uint settings_get_calib_mode(void)
+{
+    return current_settings->calibrate_mode;
+}
+
 void settings_set_language(unsigned lang)
 {
+    /* 先切换locale, 后续显示的对话框等为对应语言 */
     switch (lang) {
         case SETTINGS_LANG_ZH_CN:
             lv_i18n_set_locale("zh-CN");
@@ -170,16 +255,7 @@ void settings_set_language(unsigned lang)
 
 uint settings_get_language(void)
 {
-    switch (current_settings->language) {
-    case SETTINGS_LANG_ZH_CN:
-        return SETTINGS_LANG_ZH_CN;
-    case SETTINGS_LANG_EN_US:
-        return SETTINGS_LANG_EN_US;
-    default:
-        return SETTINGS_LANG_ZH_CN;
-    }
-
-    return -1;
+    return current_settings->language;
 }
 
 void settings_set_sn(uint8_t sn[])
@@ -199,46 +275,6 @@ void settings_set_sn(uint8_t sn[])
 void settings_get_sn(uint8_t *sn_out)
 {
     memcpy(sn_out, current_settings->sn, 8);
-}
-
-static void increase_boot_count(void)
-{
-    switch (current_settings->partition) {
-    case SETTINGS_1:
-        runtime_settings.boot_count += 1;
-        break;
-    case SETTINGS_2:
-        runtime_settings_2.boot_count += 1;
-        break;
-    default:
-        runtime_settings.boot_count += 1;
-        break;
-    }
-}
-
-static void dump_settings(const struct settings *s)
-{
-    if (!s)
-        return;
-
-    printf("Settings:\n");
-    printf("\tmagic: 0x%08x\n", s->magic);
-    printf("\tsn: 0x%08x 0x%08x\n", s->sn[0], s->sn[1]);
-    printf("\tsw_version: 0x%08x\n", s->sw_version);
-    printf("\thw_version: 0x%08x\n", s->hw_version);
-    printf("\tboot_count: %d\n", s->boot_count);
-    printf("\tpartition: %d\n", s->partition);
-    printf("\tlanguage: %d\n", s->language);
-}
-
-static void dump_def_settings(void)
-{
-    dump_settings(&default_settings);
-}
-
-static void dump_curr_settings(void)
-{
-    dump_settings(current_settings);
 }
 
 void settings_init(void)
@@ -287,4 +323,3 @@ void settings_init(void)
     increase_boot_count();
     save_settings();
 }
-
