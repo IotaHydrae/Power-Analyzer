@@ -19,6 +19,10 @@ static inline uint32_t op_t(uint32_t val) { UNUSED(val); return 0; }
 
 static lv_i18n_phrase_t zh_cn_singulars[] = {
     {"title1", "此处显示基本信息"},
+    {"yes", "是"},
+    {"no", "否"},
+    {"note", "提示"},
+    {"note_restart", "为了使配置生效，需要重启设备"},
     {"settings_automatic_protection", "自动保护设置"},
     {"settings_automatic_voltage_cut", "自动断开电压"},
     {"settings_automatic_current_cut", "自动断开电流"},
@@ -75,6 +79,10 @@ static const lv_i18n_lang_t zh_cn_lang = {
 
 static lv_i18n_phrase_t en_us_singulars[] = {
     {"title1", "Display basic information here"},
+    {"yes", "Yes"},
+    {"no", "No"},
+    {"note", "Note"},
+    {"note_restart", "A system reboot is required to make settings valid."},
     {"settings_automatic_protection", "Automatic protection settings"},
     {"settings_automatic_voltage_cut", "Automatic voltage cut"},
     {"settings_automatic_current_cut", "Automatic current cut"},

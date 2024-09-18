@@ -211,11 +211,11 @@ static void event_cb(lv_event_t * e)
     lv_obj_t * obj = lv_event_get_current_target(e);
     LV_LOG_USER("Button %s clicked", lv_msgbox_get_active_btn_text(obj));
 
-    if (0 == strcmp("Yes", lv_msgbox_get_active_btn_text(obj))) {
+    if (0 == strcmp(_("yes"), lv_msgbox_get_active_btn_text(obj))) {
         lv_msgbox_close(obj);
         LV_LOG_INFO("restarting device...\n");
         /*  TODO: restart the device */
-        watchdog_reboot(0, SRAM_END, 10);
+        watchdog_reboot(0, 0, 0);
     } else {
         LV_LOG_INFO("do nothing...\n");
         lv_msgbox_close(obj);
@@ -241,8 +241,12 @@ static void dd_settings_lang_handler(lv_event_t *e)
         } else {
             settings_set_language(SETTINGS_LANG_ZH_CN);
         }
-        static const char * btns[] = {"Yes", "No", ""};
-        lv_obj_t * dialog = lv_msgbox_create(NULL, "Note", "A system restart is required to make language setting valid.", btns, true);
+        static const char *btns[3];
+        btns[0] = _("yes");
+        btns[1] = _("no");
+        btns[2] = "";
+        lv_obj_t * dialog = lv_msgbox_create(NULL, _("note"), _("note_restart"), btns, true);
+        lv_obj_set_style_text_font(dialog, &ui_font_ns14, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_add_event_cb(dialog, event_cb, LV_EVENT_VALUE_CHANGED, NULL);
         lv_obj_center(dialog);
     }

@@ -1,5 +1,9 @@
-'zh-CN':
+"zh-CN":
   title1: 此处显示基本信息
+  yes: 是
+  no: 否
+  note: 提示
+  note_restart: 为了使配置生效，需要重启设备
   settings_automatic_protection: 自动保护设置
   settings_automatic_voltage_cut: 自动断开电压
   settings_automatic_current_cut: 自动断开电流

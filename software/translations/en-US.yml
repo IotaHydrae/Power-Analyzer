@@ -1,5 +1,9 @@
-'en-US':
+"en-US":
   title1: Display basic information here
+  yes: Yes
+  no: No
+  note: Note
+  note_restart: A system reboot is required to make settings valid.
   settings_automatic_protection: Automatic protection settings
   settings_automatic_voltage_cut: Automatic voltage cut
   settings_automatic_current_cut: Automatic current cut
