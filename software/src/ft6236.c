@@ -54,7 +54,7 @@ static uint16_t ft6236_read_x(struct indev_priv *priv)
     uint8_t val_h = read_reg(priv, FT_REG_TOUCH1_XH) & 0x1f;  /* the MSB is always high, but it shouldn't */
     uint8_t val_l = read_reg(priv, FT_REG_TOUCH1_XL);
     uint16_t val = (val_h << 8) | val_l;
-    
+
     if (priv->invert_x)
         return (priv->x_res - val);
 
@@ -101,7 +101,7 @@ static void ft6236_hw_init(struct indev_priv *priv)
 
     pr_debug("chip reset\n");
     priv->ops->reset(priv);
-    priv->ops->set_dir(priv, INDEV_DIR_SWITCH_XY | INDEV_DIR_INVERT_Y);
+    priv->ops->set_dir(priv, INDEV_DIR_SWITCH_XY | INDEV_DIR_INVERT_X);
 
     // i2c_bus_scan(priv->spec->i2c.master);
 

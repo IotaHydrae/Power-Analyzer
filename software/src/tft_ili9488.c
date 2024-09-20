@@ -52,9 +52,9 @@ static int tft_ili9488_init_display(struct tft_priv *priv)
 
     write_reg(priv, 0xe9, 0x00);
 
-    // Switch Page/Column Addressing Order
-    // Invert Column Address Order
-    write_reg(priv, 0x36, 0x8 | (1 << 5) | (1 << 6));
+    // MY | MV | ML | BGR | MH
+    // write_reg(priv, 0x36, (1 << 7) | (1 << 5) | (1 << 4) | (1 << 3) | (1 << 2));
+    write_reg(priv, 0x36, 0xbc);
 
     write_reg(priv, 0x3a, 0x55);
 
@@ -76,7 +76,7 @@ static void tft_video_sync(struct tft_priv *priv, int xs, int ys, int xe, int ye
     // printf("video sync: xs=%d, ys=%d, xe=%d, ye=%d, len=%d\n", xs, ys, xe, ye, len);
     priv->tftops->set_addr_win(priv, xs, ys, xe, ye);
 
-    /* 
+    /*
      * 8080 8-bit Data Bus for 16-bit/pixel (RGB 5-6-5 Bits Input)
      *      DB 7     R4  G2
      *      DB 6     R3  G1
