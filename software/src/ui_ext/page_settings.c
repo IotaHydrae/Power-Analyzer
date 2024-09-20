@@ -236,6 +236,31 @@ static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
     /* save this setting to flash */
 }
 
+static void dd_settings_ui_theme_handler(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        char buf[32];
+        lv_dropdown_get_selected_str(obj, buf, sizeof(buf));
+        LV_LOG_USER("Option: %s", buf);
+
+        if (0 == strcmp(_("settings_ui_theme_light"), buf)) {
+            LV_LOG_USER("Theme set to light\n");
+            lv_disp_t *dispp = lv_disp_get_default();
+            lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), false, &ui_font_ns14);
+            lv_disp_set_theme(dispp, theme);
+        } else if (0 == strcmp(_("settings_ui_theme_dark"), buf)) {
+            LV_LOG_USER("Theme set to Dark\n");
+            lv_disp_t *dispp = lv_disp_get_default();
+            lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), true, &ui_font_ns14);
+            lv_disp_set_theme(dispp, theme);
+        } else {
+            LV_LOG_ERROR("Given theme is Unsupported!\n");
+        }
+    }
+}
+
 static void dd_settings_ui_refr_rate_handler(lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
@@ -313,7 +338,6 @@ void page_settings_finalize(void)
     encoder_group_add_obj(objects.settings_btn_statistics);
     encoder_group_add_obj(objects.settings_btn_pd);
     encoder_group_add_obj(objects.settings_btn_home);
-    encoder_group_add_obj(objects.settings_btn_meter);
     encoder_group_add_obj(objects.settings_btn_settings);
 
     lv_obj_t *menu = objects.settings_menu_settings;
@@ -338,7 +362,17 @@ void page_settings_finalize(void)
     lv_obj_set_style_pad_hor(sub_ui_page, lv_obj_get_style_pad_left(lv_menu_get_main_header(menu), 0), 0);
     lv_menu_separator_create(sub_ui_page);
     section = lv_menu_section_create(sub_ui_page);
-    // create_switch(section, LV_SYMBOL_AUDIO, "Sound", false);
+
+    /* 创建显示界面主题下拉菜单 */
+    const char *disp_theme_opts[] = {
+        _("settings_ui_theme_light"),
+        _("settings_ui_theme_dark"),
+        NULL
+    };
+    cont = create_dropdown(section, NULL, _("settings_ui_theme"), disp_theme_opts);
+    lv_obj_add_event_cb(cont, dd_settings_ui_theme_handler, LV_EVENT_ALL, NULL);
+    // lv_dropdown_set_selected(cont, settings_get_refr_rate());
+
     const char *ref_rate_opts[] = { "30Hz", "45Hz", "60Hz", NULL};
     cont = create_dropdown(section, NULL, _("settings_ui_refr_rate"), ref_rate_opts);
     lv_obj_add_event_cb(cont, dd_settings_ui_refr_rate_handler, LV_EVENT_ALL, NULL);
