@@ -20,12 +20,12 @@ typedef struct _objects_t {
     lv_obj_t *home_btn_ops;
     lv_obj_t *home_btn_ops_lbl_pause;
     lv_obj_t *home_btn_ops_lbl_resume;
-    lv_obj_t *home_btn_pd;
     lv_obj_t *home_btn_power;
     lv_obj_t *home_btn_settings;
     lv_obj_t *home_btn_statistics;
     lv_obj_t *home_btn_title;
     lv_obj_t *home_btn_title_lbl_hint;
+    lv_obj_t *home_btn_usb;
     lv_obj_t *home_chart_current;
     lv_obj_t *home_nav_bar;
     lv_obj_t *obj0;
@@ -46,9 +46,9 @@ typedef struct _objects_t {
     lv_obj_t *obj8;
     lv_obj_t *obj9;
     lv_obj_t *settings_btn_home;
-    lv_obj_t *settings_btn_pd;
     lv_obj_t *settings_btn_settings;
     lv_obj_t *settings_btn_statistics;
+    lv_obj_t *settings_btn_usb;
     lv_obj_t *settings_menu_settings;
     lv_obj_t *settings_nav_bar;
     lv_obj_t *statistics_btn_home;
@@ -72,7 +72,6 @@ enum ScreensEnum {
     SCREEN_ID_STATISTICS = 2,
     SCREEN_ID_USB = 3,
     SCREEN_ID_SETTINGS = 4,
-    SCREEN_ID_NAV = 5,
 };
 
 void create_screen_home();
@@ -86,9 +85,6 @@ void tick_screen_usb();
 
 void create_screen_settings();
 void tick_screen_settings();
-
-void create_user_widget_nav(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
-void tick_user_widget_nav(void *flowState, int startWidgetIndex);
 
 void create_screens();
 void tick_screen(int screen_index);

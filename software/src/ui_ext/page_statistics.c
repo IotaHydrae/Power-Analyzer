@@ -50,7 +50,6 @@ void page_statistics_finalize(void)
 
     table = objects.statistics_table;
     lv_obj_set_style_text_font(table, &ui_font_ns14, LV_PART_MAIN | LV_PART_ITEMS | LV_STATE_DEFAULT);
-    lv_obj_set_size(table, 480, 280);
     lv_table_set_col_width(table, 0, 120);
     lv_table_set_col_width(table, 1, 120);
 
@@ -59,10 +58,10 @@ void page_statistics_finalize(void)
     lv_table_set_cell_value(table, 2, 0, _("statistics_avg_currnet_total"));
     lv_table_set_cell_value(table, 3, 0, _("statistics_rtc_time"));
     lv_table_set_cell_value(table, 4, 0, _("statistics_instant_peak_currnet"));
+    lv_table_set_cell_value(table, 5, 0, _("statistics_minimum_no_zero_currnet"));
 
-    lv_table_set_cell_value(table, 0, 2, _("statistics_minimum_no_zero_currnet"));
-    lv_table_set_cell_value(table, 1, 2, _("statistics_total_capacity"));
-    lv_table_set_cell_value(table, 2, 2, _("statistics_total_energy"));
+    lv_table_set_cell_value(table, 0, 2, _("statistics_total_capacity"));
+    lv_table_set_cell_value(table, 1, 2, _("statistics_total_energy"));
 
     /*Fill the second column*/
     lv_table_set_cell_value(table, 0, 1, "0");
@@ -70,10 +69,10 @@ void page_statistics_finalize(void)
     lv_table_set_cell_value(table, 2, 1, "0");
     lv_table_set_cell_value(table, 3, 1, "0");
     lv_table_set_cell_value(table, 4, 1, "0");
+    lv_table_set_cell_value(table, 5, 1, "0");
 
     lv_table_set_cell_value(table, 0, 3, "0");
     lv_table_set_cell_value(table, 1, 3, "0");
-    lv_table_set_cell_value(table, 2, 3, "0");
 
     lv_obj_add_event_cb(table, draw_part_event_cb, LV_EVENT_DRAW_PART_BEGIN, NULL);
 }

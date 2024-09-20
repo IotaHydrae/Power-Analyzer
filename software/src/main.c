@@ -219,7 +219,7 @@ void main_task(__unused void *params) {
     printf("backlight set to 100%%\n");
 
 //     int count = 0;
-    while(true) {
+    for(;;) {
 // #if configNUMBER_OF_CORES > 1
 //         static int last_core_id = -1;
 //         if (portGET_CORE_ID() != last_core_id) {
@@ -228,7 +228,8 @@ void main_task(__unused void *params) {
 //         }
 // #endif
 //         printf("Hello from main task count=%u\n", count++);
-        vTaskDelay(3000);
+        // vTaskDelay(3000);
+        tight_loop_contents();
     }
 //     async_context_deinit(context);
 }

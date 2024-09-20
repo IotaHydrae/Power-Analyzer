@@ -29,7 +29,7 @@ void page_home_finalize(void)
 {
     encoder_group_add_obj(objects.home_btn_home);
     encoder_group_add_obj(objects.home_btn_statistics);
-    encoder_group_add_obj(objects.home_btn_pd);
+    encoder_group_add_obj(objects.home_btn_usb);
     encoder_group_add_obj(objects.home_btn_settings);
 
     lv_obj_t *chart = objects.home_chart_current;

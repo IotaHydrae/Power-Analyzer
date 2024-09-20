@@ -336,7 +336,7 @@ static void dd_settings_lang_handler(lv_event_t *e)
 void page_settings_finalize(void)
 {
     encoder_group_add_obj(objects.settings_btn_statistics);
-    encoder_group_add_obj(objects.settings_btn_pd);
+    encoder_group_add_obj(objects.settings_btn_usb);
     encoder_group_add_obj(objects.settings_btn_home);
     encoder_group_add_obj(objects.settings_btn_settings);
 

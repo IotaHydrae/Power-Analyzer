@@ -21,7 +21,7 @@
 
 # This is the main CMakeLists file of the project. It is used to build the project
 # using the CMake build system. You can find the documentation of CMake at
-# https:#cmake.org/cmake/help/latest/index.html
+# https: #cmake.org/cmake/help/latest/index.html
 
 # Set all global variables here
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -37,7 +37,7 @@ if(OVERCLOCK_ENABLED)
     #  3  | 360MHz  |  90MHz    |  1.20(V)
     #  4  | 400MHz  |  100MHz   |  1.30(V)
     #  5  | 416MHz  |  104MHz   |  1.30(V)
-    set(OVERCLOCK_PROFILE 4)
+    set(OVERCLOCK_PROFILE 1)
 
     if(OVERCLOCK_PROFILE EQUAL 1)
         set(SYS_CLK_KHZ 240000)             # CPU clock speed
@@ -158,6 +158,7 @@ file(GLOB_RECURSE COMMON_SOURCES
     backlight.c
     flash.c
     encoder.cc
+    button.c
 )
 
 file(GLOB_RECURSE UI_SOURCES
@@ -249,3 +250,4 @@ pico_enable_stdio_usb(${PROJECT_NAME} 1)
 pico_enable_stdio_uart(${PROJECT_NAME} 0)
 
 pico_add_extra_outputs(${PROJECT_NAME})
+

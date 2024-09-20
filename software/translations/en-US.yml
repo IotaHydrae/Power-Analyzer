@@ -4,12 +4,12 @@
   no: No
   note: Note
   note_restart: A system reboot is required to make settings valid.
-  statistics_avg_current_per_second: Average current per second
-  statistics_avg_current_per_minute: Average current per minute
-  statistics_avg_currnet_total: Total average current
-  statistics_rtc_time: RTC statistical time
-  statistics_instant_peak_currnet: Instantaneous peak current
-  statistics_minimum_no_zero_currnet: Minimum non-zero current
+  statistics_avg_current_per_second: 1 second avg.
+  statistics_avg_current_per_minute: 1 minute avg.
+  statistics_avg_currnet_total: Total avg.
+  statistics_rtc_time: RTC time
+  statistics_instant_peak_currnet: Max current
+  statistics_minimum_no_zero_currnet: Min currnet
   statistics_total_capacity: Total Capacity
   statistics_total_energy: Total Energy
   pd_power_protection: PD power protection

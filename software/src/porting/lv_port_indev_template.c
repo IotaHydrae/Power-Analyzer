@@ -16,6 +16,7 @@
 #include "indev.h"
 
 #include "encoder.h"
+#include "button.h"
 
 /*********************
  *      DEFINES
@@ -62,7 +63,7 @@ lv_indev_t * indev_encoder;
 lv_indev_t * indev_button;
 
 static int32_t encoder_diff;
-static lv_indev_state_t encoder_state;
+// static lv_indev_state_t encoder_state;
 static lv_group_t *encoder_group;
 /**********************
  *      MACROS
@@ -155,26 +156,28 @@ void lv_port_indev_init(void)
      *and assign this input device to group to navigate in it:
      *`lv_indev_set_group(indev_encoder, group);`*/
     encoder_group = lv_group_create();
-    lv_indev_set_group(indev_encoder, encoder_group);
+    // lv_indev_set_group(indev_encoder, encoder_group);
     /*------------------
      * Button
      * -----------------*/
-    // static lv_indev_drv_t btn_indev_drv;
+    static lv_indev_drv_t btn_indev_drv;
     /*Initialize your button if you have*/
-    // button_init();
+    button_init();
 
     /*Register a button input device*/
-    // lv_indev_drv_init(&btn_indev_drv);
-    // btn_indev_drv.type = LV_INDEV_TYPE_BUTTON;
-    // btn_indev_drv.read_cb = button_read;
-    // indev_button = lv_indev_drv_register(&btn_indev_drv);
+    lv_indev_drv_init(&btn_indev_drv);
+    btn_indev_drv.type = LV_INDEV_TYPE_BUTTON;
+    btn_indev_drv.read_cb = button_read;
+    indev_button = lv_indev_drv_register(&btn_indev_drv);
 
     /*Assign buttons to points on the screen*/
-    // static const lv_point_t btn_points[2] = {
-    //     {10, 10},   /*Button 0 -> x:10; y:10*/
-    //     {40, 100},  /*Button 1 -> x:40; y:100*/
-    // };
-    // lv_indev_set_button_points(indev_button, btn_points);
+    static const lv_point_t btn_points[BUTTON_HW_NUMS] = {
+        {447, 32},   /*Button 0 -> x:10; y:10*/
+        {447, 112},  /*Button 1 -> x:40; y:100*/
+        {447, 192},
+        {447, 272},
+    };
+    lv_indev_set_button_points(indev_button, btn_points);
 }
 
 /**********************
@@ -224,7 +227,7 @@ static void touchpad_get_xy(lv_coord_t * x, lv_coord_t * y)
 {
     /*Your code comes here*/
     (*x) = indev_read_x();
-    (*y) = indev_read_y(); 
+    (*y) = indev_read_y();
 }
 
 /*------------------
@@ -375,12 +378,12 @@ static void encoder_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
 static void button_init(void)
 {
     /*Your code comes here*/
+    button_hw_init();
 }
 
 /*Will be called by the library to read the button*/
 static void button_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
 {
-
     static uint8_t last_btn = 0;
 
     /*Get the pressed button's ID*/
@@ -404,7 +407,7 @@ static int8_t button_get_pressed_id(void)
     uint8_t i;
 
     /*Check to buttons see which is being pressed (assume there are 2 buttons)*/
-    for(i = 0; i < 2; i++) {
+    for(i = 0; i < BUTTON_HW_NUMS; i++) {
         /*Return the pressed button's ID*/
         if(button_is_pressed(i)) {
             return i;
@@ -418,10 +421,8 @@ static int8_t button_get_pressed_id(void)
 /*Test if `id` button is pressed or not*/
 static bool button_is_pressed(uint8_t id)
 {
-
     /*Your code comes here*/
-
-    return false;
+    return button_hw_is_pressed(id);
 }
 
 #else /*Enable this file at the top*/
