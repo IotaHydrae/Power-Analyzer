@@ -102,7 +102,7 @@ static u16 __indev_read_x(struct indev_priv *priv)
 
 u16 indev_read_x(void)
 {
-    return __indev_read_x(&g_indev_priv);
+    return (__indev_read_x(&g_indev_priv) - 1);
 }
 
 static u16 __indev_read_y(struct indev_priv *priv)

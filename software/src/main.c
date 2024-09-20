@@ -215,8 +215,7 @@ void main_task(__unused void *params) {
     vTaskCoreAffinitySet(video_flush_handler, (1 << 1));
 
     backlight_driver_init();
-    backlight_set_level(100);
-    printf("backlight set to 100%%\n");
+    backlight_set_level(settings_get_bl_lvl());
 
 //     int count = 0;
     for(;;) {

@@ -180,6 +180,15 @@ static void event_handler_cb_settings_settings_btn_settings(lv_event_t *e) {
     }
 }
 
+static void event_handler_cb_lock_screen_lockscreen_btn(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = lv_event_get_user_data(e);
+    if (event == LV_EVENT_PRESSED) {
+        e->user_data = (void *)0;
+        flowPropagateValueLVGLEvent(flowState, 0, 0, e);
+    }
+}
+
 void create_screen_home() {
     void *flowState = getFlowState(0, 0);
     lv_obj_t *obj = lv_obj_create(0);
@@ -257,7 +266,6 @@ void create_screen_home() {
             lv_obj_set_pos(obj, 370, 1);
             lv_obj_set_size(obj, 57, 35);
             lv_obj_add_event_cb(obj, event_handler_cb_home_home_btn_power, LV_EVENT_ALL, flowState);
-            lv_obj_add_flag(obj, LV_OBJ_FLAG_CHECKABLE);
             lv_obj_set_style_radius(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             {
                 lv_obj_t *parent_obj = obj;
@@ -1166,6 +1174,31 @@ void tick_screen_settings() {
     }
 }
 
+void create_screen_lock_screen() {
+    void *flowState = getFlowState(0, 4);
+    lv_obj_t *obj = lv_obj_create(0);
+    objects.lock_screen = obj;
+    lv_obj_set_pos(obj, 0, 0);
+    lv_obj_set_size(obj, 480, 320);
+    {
+        lv_obj_t *parent_obj = obj;
+        {
+            // lockscreen_btn
+            lv_obj_t *obj = lv_btn_create(parent_obj);
+            objects.lockscreen_btn = obj;
+            lv_obj_set_pos(obj, 0, 0);
+            lv_obj_set_size(obj, 480, 320);
+            lv_obj_add_event_cb(obj, event_handler_cb_lock_screen_lockscreen_btn, LV_EVENT_ALL, flowState);
+            lv_obj_set_style_radius(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_color(obj, lv_color_hex(0xff000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+    }
+}
+
+void tick_screen_lock_screen() {
+    void *flowState = getFlowState(0, 4);
+}
+
 
 void create_screens() {
     lv_disp_t *dispp = lv_disp_get_default();
@@ -1176,6 +1209,7 @@ void create_screens() {
     create_screen_statistics();
     create_screen_usb();
     create_screen_settings();
+    create_screen_lock_screen();
 }
 
 typedef void (*tick_screen_func_t)();
@@ -1185,6 +1219,7 @@ tick_screen_func_t tick_screen_funcs[] = {
     tick_screen_statistics,
     tick_screen_usb,
     tick_screen_settings,
+    tick_screen_lock_screen,
 };
 
 void tick_screen(int screen_index) {

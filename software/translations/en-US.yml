@@ -15,11 +15,15 @@
   pd_power_protection: PD power protection
   pd_func_enable: PD enable
   voltage_setting: Voltage Setting
-  settings_automatic_protection: Automatic protection settings
+  settings_automatic_protection: Protection
   settings_automatic_voltage_cut: Automatic voltage cut
   settings_automatic_current_cut: Automatic current cut
   settings_ui: UI settings
+  settings_ui_theme: Theme
+  settings_ui_theme_light: Light
+  settings_ui_theme_dark: Dark
   settings_ui_refr_rate: Refresh rate
+  settings_ui_blk_lvl: Backlight level
   settings_ui_disp_mode: Display mode
   settings_ui_disp_mode_0: Meter+Numer
   settings_ui_disp_mode_1: Number+Line
@@ -40,11 +44,11 @@
   settings_sw_ver: Software version
   settings_hw_ver: Hardware version
   settings_boot_count: Boot count
-  settings_system: System settings
-  settings_range_sw_algo_sel: Range switch algorithm selection
+  settings_system: System
+  settings_range_sw_algo_sel: Range algorithm
   settings_range_sw_algo_sel_0: Realtime switch
   settings_range_sw_algo_sel_1: Smooth switch
-  settings_device_addr: Device communication address
+  settings_device_addr: Device address
   settings_factory_reset: System recovery
   settings_language: Language setting
   settings_lang_simplified_chinese: 简体中文

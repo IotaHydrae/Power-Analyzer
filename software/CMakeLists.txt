@@ -52,3 +52,4 @@ add_custom_target(
     COMMENT "Print target size info"
     DEPENDS ${PROJECT_NAME}
 )
+

@@ -9,6 +9,7 @@
 
 #include "ui_ext.h"
 #include "settings.h"
+#include "backlight.h"
 #include "porting/lv_port_indev_template.h"
 
 LV_FONT_DECLARE(ui_font_ns14);
@@ -24,7 +25,7 @@ static void switch_handler(lv_event_t * e);
 static lv_obj_t * create_text(lv_obj_t * parent, const char * icon, const char * txt,
                               lv_menu_builder_variant_t builder_variant);
 static lv_obj_t * create_slider(lv_obj_t * parent,
-                                const char * icon, const char * txt, int32_t min, int32_t max, int32_t val);
+                                const char * icon, const char * txt, int32_t min, int32_t max, volatile int32_t val);
 static lv_obj_t * create_switch(lv_obj_t * parent,
                                 const char * icon, const char * txt, bool chk);
 
@@ -136,20 +137,20 @@ static lv_obj_t * create_text_with_detail(lv_obj_t *parent, const char *txt, con
 }
 
 static lv_obj_t * create_slider(lv_obj_t * parent, const char * icon, const char * txt, int32_t min, int32_t max,
-                                int32_t val)
+                                volatile int32_t val)
 {
     lv_obj_t * obj = create_text(parent, icon, txt, LV_MENU_ITEM_BUILDER_VARIANT_2);
 
     lv_obj_t * slider = lv_slider_create(obj);
     lv_obj_set_flex_grow(slider, 1);
     lv_slider_set_range(slider, min, max);
-    lv_slider_set_value(slider, val, LV_ANIM_OFF);
+    lv_slider_set_value(slider, val, LV_ANIM_ON);
 
-    if(icon == NULL) {
-        lv_obj_add_flag(slider, LV_OBJ_FLAG_FLEX_IN_NEW_TRACK);
-    }
+    // if(icon == NULL) {
+    //     lv_obj_add_flag(slider, LV_OBJ_FLAG_FLEX_IN_NEW_TRACK);
+    // }
 
-    return obj;
+    return slider;
 }
 
 static lv_obj_t * create_switch(lv_obj_t * parent, const char * icon, const char * txt, bool chk)
@@ -221,6 +222,31 @@ void raise_reboot_dialog(void)
     lv_obj_set_style_text_font(dialog, &ui_font_ns14, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_event_cb(dialog, event_cb, LV_EVENT_VALUE_CHANGED, NULL);
     lv_obj_center(dialog);
+}
+
+static void save_bl_setting(lv_timer_t *t)
+{
+    const lv_obj_t *slider = (const lv_obj_t *)t->user_data;
+    uint bl_lvl = lv_slider_get_value(slider);
+    if (bl_lvl == settings_get_bl_lvl())
+        return;
+
+    settings_set_bl_lvl(bl_lvl);
+    LV_LOG_WARN("blk lvl %d was saved to flash.\n", lv_slider_get_value(slider));
+    lv_timer_del(t);
+}
+
+static void slider_bl_knob_released_handler(lv_event_t *e)
+{
+    LV_LOG_WARN("%s", __func__);
+    lv_obj_t *obj = lv_event_get_target(e);
+    lv_timer_t *timer = lv_timer_create(save_bl_setting, 200, obj);
+    lv_timer_set_repeat_count(timer, 1);
+}
+
+static void slider_bl_val_chg_event_handler(lv_event_t * e)
+{
+    backlight_set_level(lv_slider_get_value(lv_event_get_target(e)));
 }
 
 static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
@@ -373,6 +399,12 @@ void page_settings_finalize(void)
     lv_obj_add_event_cb(cont, dd_settings_ui_theme_handler, LV_EVENT_ALL, NULL);
     // lv_dropdown_set_selected(cont, settings_get_refr_rate());
 
+    /* 创建背光亮度滑动条 */
+    cont = create_slider(section, NULL, _("settings_ui_blk_lvl"), 0, 100, settings_get_bl_lvl());
+    lv_obj_add_event_cb(cont, slider_bl_knob_released_handler, LV_EVENT_RELEASED, NULL);
+    lv_obj_add_event_cb(cont, slider_bl_val_chg_event_handler, LV_EVENT_VALUE_CHANGED, NULL);
+
+    /* 创建刷新频率下拉菜单 */
     const char *ref_rate_opts[] = { "30Hz", "45Hz", "60Hz", NULL};
     cont = create_dropdown(section, NULL, _("settings_ui_refr_rate"), ref_rate_opts);
     lv_obj_add_event_cb(cont, dd_settings_ui_refr_rate_handler, LV_EVENT_ALL, NULL);

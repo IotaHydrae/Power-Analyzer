@@ -54,6 +54,7 @@ static const struct settings __attribute__((section(".settings_bak"))) __attribu
     .hw_version = 0,
     .boot_count = 0,
     .partition = 3,
+    .bl_lvl = 100,
     // .crc32 = 0
 };
 
@@ -179,6 +180,27 @@ static void increase_boot_count(void)
 uint settings_get_boot_count(void)
 {
     return current_settings->boot_count;
+}
+
+void settings_set_bl_lvl(unsigned lvl)
+{
+    switch (current_settings->partition) {
+    case SETTINGS_1:
+        runtime_settings.bl_lvl = lvl;
+        break;
+    case SETTINGS_2:
+        runtime_settings_2.bl_lvl = lvl;
+        break;
+    default:
+        break;
+    }
+
+    save_settings();
+}
+
+uint settings_get_bl_lvl(void)
+{
+    return current_settings->bl_lvl;
 }
 
 void settings_set_refr_rate(unsigned rate)

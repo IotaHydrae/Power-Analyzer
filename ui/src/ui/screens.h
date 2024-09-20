@@ -14,6 +14,7 @@ typedef struct _objects_t {
     lv_obj_t *statistics;
     lv_obj_t *usb;
     lv_obj_t *settings;
+    lv_obj_t *lock_screen;
     lv_obj_t *ddlist_pd_power_protection;
     lv_obj_t *ddlist_pd_vol_setting;
     lv_obj_t *home_btn_home;
@@ -28,6 +29,7 @@ typedef struct _objects_t {
     lv_obj_t *home_btn_usb;
     lv_obj_t *home_chart_current;
     lv_obj_t *home_nav_bar;
+    lv_obj_t *lockscreen_btn;
     lv_obj_t *obj0;
     lv_obj_t *obj1;
     lv_obj_t *obj10;
@@ -72,6 +74,7 @@ enum ScreensEnum {
     SCREEN_ID_STATISTICS = 2,
     SCREEN_ID_USB = 3,
     SCREEN_ID_SETTINGS = 4,
+    SCREEN_ID_LOCK_SCREEN = 5,
 };
 
 void create_screen_home();
@@ -85,6 +88,9 @@ void tick_screen_usb();
 
 void create_screen_settings();
 void tick_screen_settings();
+
+void create_screen_lock_screen();
+void tick_screen_lock_screen();
 
 void create_screens();
 void tick_screen(int screen_index);

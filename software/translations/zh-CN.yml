@@ -15,13 +15,14 @@
   pd_power_protection: 保护功率设置
   pd_func_enable: 开启PD功能
   voltage_setting: 电压设置
-  settings_automatic_protection: 自动保护设置
+  settings_automatic_protection: 自保护设置
   settings_automatic_voltage_cut: 自动断开电压
   settings_automatic_current_cut: 自动断开电流
   settings_ui: 界面设置
   settings_ui_theme: 系统主题
   settings_ui_theme_light: 浅色
   settings_ui_theme_dark: 深色
+  settings_ui_blk_lvl: 背光亮度
   settings_ui_refr_rate: 刷新频率
   settings_ui_disp_mode: 显示模式
   settings_ui_disp_mode_0: 指针+数字

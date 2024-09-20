@@ -9,7 +9,8 @@ extern "C" {
 
 extern void action_chart_current_pause(lv_event_t * e);
 extern void action_chart_current_resume(lv_event_t * e);
-extern void action_btn_power(lv_event_t * e);
+extern void action_set_blk_off(lv_event_t * e);
+extern void action_set_blk_on(lv_event_t * e);
 
 
 #ifdef __cplusplus
