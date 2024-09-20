@@ -15,6 +15,25 @@
 static lv_coord_t ecg_sample[SAMPLE_DATA_SIZE];
 static lv_timer_t *chart_current_timer;
 
+static void lbl_vol_txt_handler(lv_timer_t *t)
+{
+    lv_obj_t *obj = t->user_data;
+    uint data = lv_rand(100, 400);
+    lv_label_set_text_fmt(obj, "%d.%02d V", data / 100, data % 100);
+}
+
+static void lbl_cur_txt_handler(lv_timer_t *t)
+{
+    lv_obj_t *obj = t->user_data;
+    lv_label_set_text_fmt(obj, "%d.%02d A", lv_rand(0, 5), lv_rand(10, 20));
+}
+
+static void lbl_pow_txt_handler(lv_timer_t *t)
+{
+    lv_obj_t *obj = t->user_data;
+    lv_label_set_text_fmt(obj, "%02d.%02d W", lv_rand(0, 75), lv_rand(0, 75));
+}
+
 static void chart_demo_1_add_data(lv_timer_t *t)
 {
     LV_UNUSED(t);
@@ -95,7 +114,18 @@ void page_home_finalize(void)
     encoder_group_add_obj(objects.home_btn_usb);
     encoder_group_add_obj(objects.home_btn_settings);
 
+    lv_obj_t *lbl_vol = objects.home_lbl_voltage;
+    lv_timer_create(lbl_vol_txt_handler, 33, lbl_vol);
+
+    lv_obj_t *lbl_cur = objects.home_lbl_current;
+    lv_timer_create(lbl_cur_txt_handler, 33, lbl_cur);
+
+    lv_obj_t *lbl_pow = objects.home_lbl_power;
+    lv_timer_create(lbl_pow_txt_handler, 33, lbl_pow);
+
     lv_obj_t *chart = objects.home_chart_current;
+    lv_chart_set_axis_tick(chart, LV_CHART_AXIS_PRIMARY_Y, 10, 5, 6, 5, true, 40);
+    lv_chart_set_axis_tick(chart, LV_CHART_AXIS_PRIMARY_X, 10, 5, 10, 1, true, 30);
     lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, -1000, 1000);
     lv_obj_set_style_size(chart, 0, LV_PART_INDICATOR);
     lv_chart_series_t * ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_YELLOW), LV_CHART_AXIS_PRIMARY_Y);

@@ -1,8 +1,10 @@
 {
   "navigation": {
     "selectedUserPageObject": "[power-analyzer.eez-project]:/userPages/0",
-    "selectedUserWidgetObject": "[power-analyzer.eez-project]:/userWidgets/0",
-    "selectedFontObject": "[power-analyzer.eez-project]:/fonts/2",
+    "selectedUserWidgetObject": "[power-analyzer.eez-project]:/userWidgets/-1",
+    "selectedActionObject": "[power-analyzer.eez-project]:/actions/3",
+    "selectedFontObject": "[power-analyzer.eez-project]:/fonts/1",
+    "selectedBitmapObject": "[power-analyzer.eez-project]:/bitmaps/-1",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Widgets"
     }
@@ -66,6 +68,7 @@
           {
             "type": "border",
             "selected": 0,
+            "size": 196.5,
             "location": "bottom",
             "children": [
               {
@@ -184,20 +187,59 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 60,
-              "selected": 2,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
-                  "id": "#fb7e19ff-ab98-4e1b-abb4-b2f0eefde35d",
-                  "name": "NS14",
+                  "id": "#423e6cae-8480-4eb3-83d1-703bd895e555",
+                  "name": "FSEX24",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[power-analyzer.eez-project]:/fonts/2",
+                    "objectPath": "[power-analyzer.eez-project]:/fonts/1",
                     "permanent": false
                   },
                   "icon": "material:font_download"
+                },
+                {
+                  "type": "tab",
+                  "id": "#cd33c798-288e-4be2-b49b-2b8c82ab8ba7",
+                  "name": "set_blk_on",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[power-analyzer.eez-project]:/actions/3",
+                    "permanent": false
+                  },
+                  "icon": "material:code"
+                },
+                {
+                  "type": "tab",
+                  "id": "#acd5ec0d-99d6-4d62-b68a-48e27414e792",
+                  "name": "Home",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[power-analyzer.eez-project]:/userPages/0",
+                    "permanent": true
+                  },
+                  "icon": {
+                    "type": "svg",
+                    "key": null,
+                    "ref": null,
+                    "props": {
+                      "viewBox": "0 96 960 960",
+                      "fill": "currentColor",
+                      "children": {
+                        "type": "path",
+                        "key": null,
+                        "ref": null,
+                        "props": {
+                          "d": "M343 636h225v-60H343v60Zm0-90h395v-60H343v60Zm0-90h395v-60H343v60Zm-83 400q-24 0-42-18t-18-42V236q0-24 18-42t42-18h560q24 0 42 18t18 42v560q0 24-18 42t-42 18H260Zm0-60h560V236H260v560ZM140 976q-24 0-42-18t-18-42V296h60v620h620v60H140Zm120-740v560-560Z"
+                        },
+                        "_owner": null
+                      }
+                    },
+                    "_owner": null
+                  }
                 },
                 {
                   "type": "tab",
@@ -214,11 +256,11 @@
                 {
                   "type": "tab",
                   "id": "#c36a4350-2564-4d87-afa5-849d4bd7a46d",
-                  "name": "Home",
+                  "name": "USB",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[power-analyzer.eez-project]:/userPages/0",
-                    "permanent": false
+                    "objectPath": "[power-analyzer.eez-project]:/userPages/2",
+                    "permanent": true
                   },
                   "icon": {
                     "type": "svg",
@@ -486,7 +528,7 @@
                 {
                   "type": "tab",
                   "id": "#8583ba74-7612-4c16-a78e-13f7255380c8",
-                  "name": "Main",
+                  "name": "Home",
                   "component": "editor",
                   "config": {
                     "objectPath": "[power-analyzer.eez-project]:/userPages/0",
@@ -829,7 +871,8 @@
                       "component": "styles",
                       "enableClose": false
                     }
-                  ]
+                  ],
+                  "active": true
                 },
                 {
                   "type": "tabset",
@@ -981,19 +1024,24 @@
     "[power-analyzer.eez-project]:/userPages/0[flow-state]": {
       "selection": {
         "0": {
-          "0": {
-            "0": {
-              "$selected": true
-            }
+          "0": {},
+          "2": {},
+          "4": {
+            "1": {
+              "0": {
+                "$selected": true
+              }
+            },
+            "2": {}
           },
-          "1": {},
-          "2": {}
-        }
+          "5": {}
+        },
+        "9": {}
       },
       "transform": {
         "translate": {
-          "x": -353.8434509277343,
-          "y": -233.92761010834658
+          "x": -295.0753246753247,
+          "y": -282.300974025974
         },
         "scale": 1.5
       },
@@ -1007,18 +1055,17 @@
     "[power-analyzer.eez-project]:/userPages/1[flow-state]": {
       "selection": {
         "0": {
-          "0": {
-            "$selected": true
-          },
-          "1": {}
+          "1": {
+            "1": {}
+          }
         }
       },
       "transform": {
         "translate": {
-          "x": -334.15277099609375,
-          "y": -168.93058204650876
+          "x": -690.2872617432319,
+          "y": -156.72353169218843
         },
-        "scale": 1.25
+        "scale": 1.5
       },
       "timeline": {
         "isEditorActive": false,
@@ -1037,7 +1084,7 @@
       },
       "transform": {
         "translate": {
-          "x": -256.6083277893065,
+          "x": -491.6083277893065,
           "y": 21.068203201293954
         },
         "scale": 1
@@ -1062,15 +1109,20 @@
     "[power-analyzer.eez-project]:/userPages/2[flow-state]": {
       "selection": {
         "0": {
-          "1": {}
+          "0": {},
+          "1": {},
+          "2": {
+            "0": {}
+          },
+          "3": {}
         }
       },
       "transform": {
         "translate": {
-          "x": -334.15277099609375,
-          "y": -168.93058204650876
+          "x": -387.9507575757575,
+          "y": -201.0484848484847
         },
-        "scale": 1.25
+        "scale": 1.75
       },
       "timeline": {
         "isEditorActive": false,
@@ -1082,15 +1134,34 @@
     "[power-analyzer.eez-project]:/userPages/3[flow-state]": {
       "selection": {
         "0": {
-          "3": {
-            "0": {}
-          }
+          "0": {},
+          "1": {}
         }
       },
       "transform": {
         "translate": {
-          "x": -240,
-          "y": -160
+          "x": -387.9507575757575,
+          "y": -201.0484848484847
+        },
+        "scale": 1.75
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[power-analyzer.eez-project]:/userPages/4[flow-state]": {
+      "selection": {
+        "0": {
+          "0": {}
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -286,
+          "y": -124
         },
         "scale": 1
       },
@@ -1099,6 +1170,26 @@
         "position": 0,
         "secondToPx": 200,
         "scrollLeft": 0
+      }
+    },
+    "[power-analyzer.eez-project]:/actions/2[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": 0,
+          "y": 0
+        },
+        "scale": 1
+      }
+    },
+    "[power-analyzer.eez-project]:/actions/3[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": 0,
+          "y": 0
+        },
+        "scale": 1
       }
     }
   },
@@ -1109,7 +1200,9 @@
   "replaceEnabled": false,
   "replaceText": "",
   "pageRuntimeFrontFace": true,
-  "breakpoints": {},
+  "breakpoints": {
+    "[power-analyzer.eez-project]:/userPages/2/components/0/children/-1": true
+  },
   "watchExpressions": [],
   "showComponentDescriptions": true,
   "logsPanelFilter": "all",
@@ -1117,9 +1210,7 @@
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "BACKGROUND",
-    "TEXT",
-    "MISCELLANEOUS"
+    "BORDER"
   ],
   "showInactiveFlowsInDebugger": true
 }

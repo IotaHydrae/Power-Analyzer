@@ -177,12 +177,7 @@ static lv_obj_t * create_dropdown(lv_obj_t *parent, const char *icon,  const cha
     encoder_group_add_obj(ddlist);
 
     lv_dropdown_clear_options(ddlist);
-    const char **ptr = opts;
-    while (*ptr != NULL)  {
-        lv_dropdown_add_option(ddlist, *ptr, LV_DROPDOWN_POS_LAST);
-        ptr++;
-    }
-
+    ddlist_add_opts(ddlist, opts);
     lv_dropdown_set_selected_highlight(ddlist, true);
 
     lv_obj_t *list = lv_dropdown_get_list(ddlist);
