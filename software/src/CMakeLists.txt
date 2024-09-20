@@ -185,6 +185,7 @@ target_link_libraries(${PROJECT_NAME}
     pico_bit_ops
     pico_mem_ops
     pico_multicore
+    pico_unique_id
     pico_async_context_freertos
     FreeRTOS-Kernel-Heap3
     pico_bootsel_via_double_reset
