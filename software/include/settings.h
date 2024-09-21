@@ -9,6 +9,11 @@ enum {
 };
 
 enum {
+    SETTINGS_THEME_LIGHT,
+    SETTINGS_THEME_DARK,
+};
+
+enum {
     SETTINGS_REFR_RATE_30FPS,
     SETTINGS_REFR_RATE_45FPS,
     SETTINGS_REFR_RATE_60FPS,
@@ -23,6 +28,8 @@ void settings_init(void);
 unsigned int settings_get_boot_count(void);
 void settings_set_bl_lvl(unsigned lvl);
 uint settings_get_bl_lvl(void);
+void settings_set_theme(unsigned theme);
+uint settings_get_theme(void);
 void settings_set_refr_rate(unsigned rate);
 uint settings_get_refr_rate(void);
 void settings_set_calib_mode(unsigned mode);

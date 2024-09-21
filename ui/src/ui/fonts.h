@@ -9,6 +9,7 @@ extern "C" {
 
 extern const lv_font_t ui_font_ns14;
 extern const lv_font_t ui_font_fsex24;
+extern const lv_font_t ui_font_fsex72;
 
 
 #ifdef __cplusplus

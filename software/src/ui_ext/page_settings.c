@@ -257,6 +257,41 @@ static void switch_settings_automatic_voltage_cut_handler(lv_event_t *e)
     /* save this setting to flash */
 }
 
+static void chg_light_theme(void)
+{
+    lv_disp_t *dispp = lv_disp_get_default();
+    lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), false, &ui_font_ns14);
+    lv_disp_set_theme(dispp, theme);
+
+
+    lv_obj_t *page_home = objects.home;
+    lv_obj_set_style_bg_color(page_home, lv_color_hex(0xffffff), LV_PART_MAIN);
+    lv_obj_t *page_usb = objects.usb;
+    lv_obj_set_style_bg_color(page_usb, lv_color_hex(0xffffff), LV_PART_MAIN);
+
+    if (settings_get_theme() == SETTINGS_THEME_LIGHT)
+        return;
+
+    settings_set_theme(SETTINGS_THEME_LIGHT);
+}
+
+static void chg_dark_theme(void)
+{
+    lv_disp_t *dispp = lv_disp_get_default();
+    lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), true, &ui_font_ns14);
+    lv_disp_set_theme(dispp, theme);
+
+    lv_obj_t *page_home = objects.home;
+    lv_obj_set_style_bg_color(page_home, lv_color_hex(0x282b30), LV_PART_MAIN);
+    lv_obj_t *page_usb = objects.usb;
+    lv_obj_set_style_bg_color(page_usb, lv_color_hex(0x282b30), LV_PART_MAIN);
+
+    if (settings_get_theme() == SETTINGS_THEME_DARK)
+        return;
+
+    settings_set_theme(SETTINGS_THEME_DARK);
+}
+
 static void dd_settings_ui_theme_handler(lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
@@ -268,14 +303,10 @@ static void dd_settings_ui_theme_handler(lv_event_t *e)
 
         if (0 == strcmp(_("settings_ui_theme_light"), buf)) {
             LV_LOG_USER("Theme set to light\n");
-            lv_disp_t *dispp = lv_disp_get_default();
-            lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), false, &ui_font_ns14);
-            lv_disp_set_theme(dispp, theme);
+            chg_light_theme();
         } else if (0 == strcmp(_("settings_ui_theme_dark"), buf)) {
             LV_LOG_USER("Theme set to Dark\n");
-            lv_disp_t *dispp = lv_disp_get_default();
-            lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), true, &ui_font_ns14);
-            lv_disp_set_theme(dispp, theme);
+            chg_dark_theme();
         } else {
             LV_LOG_ERROR("Given theme is Unsupported!\n");
         }
@@ -392,7 +423,13 @@ void page_settings_finalize(void)
     };
     cont = create_dropdown(section, NULL, _("settings_ui_theme"), disp_theme_opts);
     lv_obj_add_event_cb(cont, dd_settings_ui_theme_handler, LV_EVENT_ALL, NULL);
-    // lv_dropdown_set_selected(cont, settings_get_refr_rate());
+    if (settings_get_theme() == SETTINGS_THEME_LIGHT) {
+        chg_light_theme();
+        lv_dropdown_set_selected(cont, 0);
+    } else {
+        chg_dark_theme();
+        lv_dropdown_set_selected(cont, 1);
+    }
 
     /* 创建背光亮度滑动条 */
     cont = create_slider(section, NULL, _("settings_ui_blk_lvl"), 0, 100, settings_get_bl_lvl());

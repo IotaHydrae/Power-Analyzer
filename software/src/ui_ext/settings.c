@@ -32,6 +32,7 @@ struct settings {
     u32 cut_vol;
     u32 cut_curr;
 
+    u32 theme;
     u32 ref_rate;
     u32 chart_mode;
     u32 chart_line_color;
@@ -201,6 +202,27 @@ void settings_set_bl_lvl(unsigned lvl)
 uint settings_get_bl_lvl(void)
 {
     return current_settings->bl_lvl;
+}
+
+void settings_set_theme(unsigned theme)
+{
+    switch (current_settings->partition) {
+    case SETTINGS_1:
+        runtime_settings.theme = theme;
+        break;
+    case SETTINGS_2:
+        runtime_settings_2.theme = theme;
+        break;
+    default:
+        break;
+    }
+
+    save_settings();
+}
+
+uint settings_get_theme(void)
+{
+    return current_settings->theme;
 }
 
 void settings_set_refr_rate(unsigned rate)
